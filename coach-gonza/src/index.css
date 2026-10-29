@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+/* ---- Ajustes para usar como app en el teléfono ---- */
+html, body {
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Notch / barra de estado del iPhone */
+.safe-top { padding-top: max(0.75rem, env(safe-area-inset-top)); }
+/* Barra de gestos inferior del iPhone */
+.safe-bottom { padding-bottom: max(0.375rem, env(safe-area-inset-bottom)); }
+.pb-nav { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+
+/* Safari hace zoom al tocar campos con letra menor a 16px: se evita en el celular */
+@media (max-width: 640px) {
+  input, select, textarea { font-size: 16px !important; }
+}
+
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
