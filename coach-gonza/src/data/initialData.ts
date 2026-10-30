@@ -5,6 +5,7 @@ export const DEMO_TODAY = '2026-08-05';
 
 export const initialTrainerProfile: TrainerProfile = {
   name: "Gonzalo Palma Oviedo",
+  nickname: "Gonza",
   handle: "@palma_gon",
   gymName: "Entrenador de boxeo",
   coTrainer: "",

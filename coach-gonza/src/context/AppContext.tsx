@@ -123,7 +123,11 @@ const STORAGE_KEYS = {
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Load initial states from localStorage or defaults
-  const [profile, setProfileState] = useState<TrainerProfile>(() => load(STORAGE_KEYS.PROFILE, startProfile as TrainerProfile));
+  const [profile, setProfileState] = useState<TrainerProfile>(() => {
+    const p = load(STORAGE_KEYS.PROFILE, startProfile as TrainerProfile);
+    // Perfiles guardados antes de existir el apodo: se usa el apodo por defecto
+    return p.nickname === undefined && p.name === initialTrainerProfile.name ? { ...p, nickname: initialTrainerProfile.nickname } : p;
+  });
 
   const [clients, setClients] = useState<Client[]>(() => load(STORAGE_KEYS.CLIENTS, [] as Client[]));
 

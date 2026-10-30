@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { buildGreeting } from '../../utils/greeting';
 import { waBase } from '../../utils/whatsapp';
 import { useApp } from '../../context/AppContext';
 import {
@@ -90,6 +91,21 @@ export const DashboardView: React.FC = () => {
   const { items: newsItems } = useNews();
   const latestNews = newsItems.slice(0, 3);
 
+  // Saludo dinámico: se actualiza cada minuto
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(new Date()), 60000);
+    return () => window.clearInterval(id);
+  }, []);
+  const greeting = buildGreeting({
+    now,
+    nickname: profile.nickname?.trim() || profile.name.split(' ')[0],
+    sessions,
+    events,
+    pendingIncomes,
+    fmt: n => formatCurrency(n, profile.currencySymbol)
+  });
+
   return (
     <div className="space-y-6 pb-20 pt-2 px-4 max-w-7xl mx-auto">
       
@@ -126,11 +142,30 @@ export const DashboardView: React.FC = () => {
             </div>
 
             <div>
-              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                ¡Hola, {profile.name}! 🥊
+              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                {greeting.title}
               </h1>
-              <p className="text-xs text-zinc-400 mt-1">
-                Tienes <span className="text-white font-bold">{todaySessions.length} sesión(es)</span> programadas para hoy y <span className="text-amber-400 font-bold">{pendingIncomes.length} cobro(s) pendientes</span>.
+              <p className="text-sm text-zinc-200 mt-1.5 leading-snug">{greeting.line}</p>
+              {greeting.badges.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2.5">
+                  {greeting.badges.map(b => (
+                    <button
+                      key={b.text}
+                      onClick={() => setActiveTab(b.tone === 'fight' ? 'events' : 'finances')}
+                      className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border cursor-pointer ${
+                        b.tone === 'fight'
+                          ? 'bg-amber-950/60 border-amber-800/60 text-amber-300'
+                          : 'bg-zinc-800/80 border-zinc-700 text-amber-200'
+                      }`}
+                    >
+                      {b.tone === 'fight' ? '🥊 ' : '💰 '}
+                      {b.text}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <p className="text-[11px] text-zinc-400 italic mt-3 border-l-2 border-red-600/70 pl-2">
+                “{greeting.phrase}”
               </p>
             </div>
           </div>
@@ -286,8 +321,8 @@ export const DashboardView: React.FC = () => {
                         : 'border-zinc-800 hover:border-zinc-700'
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-start space-x-3">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                      <div className="flex items-start space-x-3 min-w-0">
                         {/* Time box */}
                         <div className="bg-zinc-800 border border-zinc-700/60 rounded-xl px-2.5 py-1.5 text-center shrink-0">
                           <span className="block text-xs font-black text-red-400">{session.startTime}</span>
@@ -300,7 +335,7 @@ export const DashboardView: React.FC = () => {
                             <h3 className="text-sm font-bold text-white leading-snug">{session.title}</h3>
                           </div>
                           
-                          <p className="text-xs text-zinc-400 mt-0.5 flex items-center gap-1.5">
+                          <p className="text-xs text-zinc-400 mt-0.5 flex flex-wrap items-center gap-x-1.5">
                             <span className="font-semibold text-zinc-200">{session.clientName || 'Cliente'}</span>
                             <span>•</span>
                             <span className="text-zinc-400">{session.location}</span>
@@ -340,7 +375,7 @@ export const DashboardView: React.FC = () => {
                       </div>
 
                       {/* Right Action buttons */}
-                      <div className="flex flex-col items-end space-y-1.5 shrink-0">
+                      <div className="flex flex-wrap sm:flex-col items-center sm:items-end gap-1.5 shrink-0 border-t sm:border-t-0 border-zinc-800 pt-2.5 sm:pt-0">
                         {/* WhatsApp Quick Link */}
                         {client && client.whatsapp && (
                           <a
@@ -349,19 +384,19 @@ export const DashboardView: React.FC = () => {
                             )}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/60 text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center space-x-1 transition-all"
+                            className="bg-emerald-950/80 hover:bg-emerald-900 text-emerald-300 border border-emerald-800/60 text-[11px] font-bold px-2.5 py-1.5 rounded-lg flex items-center space-x-1 transition-all"
                             title="Enviar recordatorio por WhatsApp"
                           >
-                            <MessageCircle className="w-3 h-3" />
-                            <span className="hidden sm:inline">WhatsApp</span>
+                            <MessageCircle className="w-3.5 h-3.5" />
+                            <span>Avisar</span>
                           </a>
                         )}
 
-                        <div className="flex items-center space-x-1">
+                        <div className="flex items-center gap-1.5">
                           {session.status !== 'completada' && (
                             <button
                               onClick={() => markSessionStatus(session.id, 'completada')}
-                              className="bg-green-600 hover:bg-green-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg transition-all cursor-pointer shadow-sm"
+                              className="bg-green-600 hover:bg-green-500 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition-all cursor-pointer shadow-sm"
                             >
                               Completar
                             </button>
@@ -369,14 +404,14 @@ export const DashboardView: React.FC = () => {
                           {session.paymentStatus === 'pendiente' && (
                             <button
                               onClick={() => markSessionPaid(session.id)}
-                              className="bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg transition-all cursor-pointer shadow-sm"
+                              className="bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition-all cursor-pointer shadow-sm"
                             >
                               Cobrar
                             </button>
                           )}
                           <button
                             onClick={() => setSelectedSession(session)}
-                            className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[11px] font-bold px-2 py-1 rounded-lg border border-zinc-700 transition-all cursor-pointer"
+                            className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[11px] font-bold px-2.5 py-1.5 rounded-lg border border-zinc-700 transition-all cursor-pointer"
                           >
                             Detalle
                           </button>

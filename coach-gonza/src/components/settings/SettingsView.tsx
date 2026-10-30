@@ -21,6 +21,7 @@ export const SettingsView: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(profile.name);
+  const [nickname, setNickname] = useState(profile.nickname || '');
   const [handle, setHandle] = useState(profile.handle || '@palma_gon');
   const [gymName, setGymName] = useState(profile.gymName);
   const [coTrainer, setCoTrainer] = useState(profile.coTrainer || '');
@@ -35,6 +36,7 @@ export const SettingsView: React.FC = () => {
     updateProfile({
       ...profile,
       name,
+      nickname: nickname.trim() || undefined,
       handle,
       gymName,
       coTrainer,
@@ -104,6 +106,17 @@ export const SettingsView: React.FC = () => {
           <h3 className="text-sm font-extrabold text-white">Perfil del Entrenador</h3>
 
           <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
+            <div>
+              <label className="block text-zinc-300 font-semibold mb-1">Apodo (así te saluda la app)</label>
+              <input
+                type="text"
+                placeholder="Ej. Gonza, Palma, Profe…"
+                value={nickname}
+                onChange={e => setNickname(e.target.value)}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-zinc-300 font-semibold mb-1">Nombre del Coach</label>

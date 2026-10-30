@@ -118,6 +118,7 @@ export interface BoxingRoutine {
 
 export interface TrainerProfile {
   name: string;
+  nickname?: string; // cómo lo saluda la app (ej. "Gonza")
   handle?: string;
   gymName: string;
   coTrainer?: string;
