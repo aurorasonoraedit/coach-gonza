@@ -46,12 +46,15 @@ const shortDate = (iso: string) => {
   return new Date(y, m - 1, d).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' });
 };
 
+// Firma de los mensajes que reciben los alumnos
+export const SIGNATURE = 'Coach Gonza';
+
 /** Mensaje amable de recordatorio de pago, listo para WhatsApp. */
 export const paymentReminderText = (
   clientName: string,
   items: DebtItem[],
   fmt: (n: number) => string,
-  coachName: string
+  _coachName?: string
 ): string => {
   const total = items.reduce((s, i) => s + i.amount, 0);
   const hola = `¡Hola ${firstName(clientName) || ''}! 👋`.replace(' !', '!');
@@ -61,5 +64,5 @@ export const paymentReminderText = (
       : `Te escribo para recordarte que quedaron pendientes estos pagos:\n${items
           .map(i => `• ${i.concept} (${shortDate(i.date)}): ${fmt(i.amount)}`)
           .join('\n')}\n*Total: ${fmt(total)}*`;
-  return `${hola}\n${detalle}\nPodés abonarlo en efectivo en la próxima clase o por transferencia. ¡Gracias! 🥊\n— ${firstName(coachName) || 'Tu entrenador'}`;
+  return `${hola}\n${detalle}\nPodés abonarlo en efectivo en la próxima clase o por transferencia. ¡Gracias! 🥊\n— ${SIGNATURE}`;
 };
