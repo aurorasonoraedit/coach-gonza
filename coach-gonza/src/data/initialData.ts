@@ -1,4 +1,7 @@
-import { Client, Session, Income, PackageService, FightEvent, Reminder, BoxingRoutine, TrainerProfile } from '../types';
+import { Client, Session, Income, PackageService, FightEvent, Reminder, BoxingRoutine, TrainerProfile, Expense, ProgressEntry } from '../types';
+
+// Fecha "de hoy" de los datos de ejemplo: al cargarlos se corren para que coincidan con el día actual
+export const DEMO_TODAY = '2026-08-05';
 
 export const initialTrainerProfile: TrainerProfile = {
   name: "Gonzalo Palma Oviedo",
@@ -65,6 +68,8 @@ export const initialClients: Client[] = [
   {
     id: "c-1",
     name: "Mateo 'El Calamar' Rossi",
+    targetWeight: 64,
+    weightClass: "Superligero 63,5 kg",
     phone: "+54 11 5544 3322",
     whatsapp: "541155443322",
     email: "mateo.rossi@ejemplo.com",
@@ -461,3 +466,17 @@ export const initialRoutines: BoxingRoutine[] = [
   }
 ];
 
+export const initialExpenses: Expense[] = [
+  { id: 'exp-1', date: '2026-08-01', concept: 'Alquiler del espacio', category: 'alquiler', amount: 60000 },
+  { id: 'exp-2', date: '2026-08-02', concept: 'Guantes 14oz y vendas', category: 'equipamiento', amount: 38000 },
+  { id: 'exp-3', date: '2026-08-04', concept: 'Nafta a la velada', category: 'transporte', amount: 12000 },
+  { id: 'exp-4', date: '2026-08-05', concept: 'Inscripción torneo amateur', category: 'federacion', amount: 15000 }
+];
+
+export const initialProgress: ProgressEntry[] = [
+  { id: 'prg-1', clientId: 'c-1', date: '2026-07-08', weight: 67.8, notes: 'Arranca el campamento' },
+  { id: 'prg-2', clientId: 'c-1', date: '2026-07-15', weight: 66.9 },
+  { id: 'prg-3', clientId: 'c-1', date: '2026-07-22', weight: 66.1, notes: 'Buen sparring, mejoró la guardia' },
+  { id: 'prg-4', clientId: 'c-1', date: '2026-07-29', weight: 65.4 },
+  { id: 'prg-5', clientId: 'c-1', date: '2026-08-05', weight: 64.6, notes: 'Le falta poco para el pesaje' }
+];

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { waBase, waLink, paymentReminderText } from '../../utils/whatsapp';
+import { ClientProgress } from './ClientProgress';
 import { useApp } from '../../context/AppContext';
 import { Client } from '../../types';
 import { X, Phone, MessageCircle, Mail, Trophy, Target, Calendar, DollarSign, Edit3, Trash2, Dumbbell, Package } from 'lucide-react';
@@ -11,9 +13,10 @@ interface ClientDetailModalProps {
 }
 
 export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, onClose }) => {
-  const { profile, sessions, incomes, packages, deleteClient } = useApp();
+  const { profile, sessions, incomes, packages, deleteClient, progress } = useApp();
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'info' | 'sessions' | 'payments'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'progress' | 'sessions' | 'payments'>('info');
+  const progressCount = progress.filter(p => p.clientId === client.id).length;
 
   const clientPackage = packages.find(p => p.id === client.packageId);
 
@@ -29,6 +32,10 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
   const totalPaidByClient = clientIncomes
     .filter(i => i.status === 'pagado')
     .reduce((sum, i) => sum + i.amount, 0);
+
+  const pendingIncomes = clientIncomes.filter(i => i.status === 'pendiente');
+  const totalDebt = pendingIncomes.reduce((sum, i) => sum + i.amount, 0);
+  const fmt = (n: number) => formatCurrency(n, profile.currencySymbol);
 
   const handleDelete = () => {
     if (confirm(`¿Estás seguro de eliminar al cliente "${client.name}"? Se mantendrá su historial de cobros.`)) {
@@ -75,14 +82,22 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
         </div>
 
         {/* Navigation Tabs */}
-        <div className="grid grid-cols-3 bg-zinc-950 border-b border-zinc-800 text-xs font-bold text-center">
+        <div className="grid grid-cols-4 bg-zinc-950 border-b border-zinc-800 text-[11px] font-bold text-center">
           <button
             onClick={() => setActiveTab('info')}
             className={`py-2.5 transition-all cursor-pointer ${
               activeTab === 'info' ? 'text-red-500 border-b-2 border-red-500 bg-zinc-900/60' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            Perfil & Datos
+            Perfil
+          </button>
+          <button
+            onClick={() => setActiveTab('progress')}
+            className={`py-2.5 transition-all cursor-pointer ${
+              activeTab === 'progress' ? 'text-red-500 border-b-2 border-red-500 bg-zinc-900/60' : 'text-zinc-400 hover:text-zinc-200'
+            }`}
+          >
+            Progreso{progressCount ? ` (${progressCount})` : ''}
           </button>
           <button
             onClick={() => setActiveTab('sessions')}
@@ -90,7 +105,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
               activeTab === 'sessions' ? 'text-red-500 border-b-2 border-red-500 bg-zinc-900/60' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            Sesiones ({clientSessions.length})
+            Clases ({clientSessions.length})
           </button>
           <button
             onClick={() => setActiveTab('payments')}
@@ -113,7 +128,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
               <div className="flex items-center space-x-2">
                 {client.whatsapp && (
                   <a
-                    href={`https://wa.me/${client.whatsapp}?text=${encodeURIComponent(
+                    href={`${waBase(client.whatsapp || client.phone)}?text=${encodeURIComponent(
                       `Hola ${client.name}, soy ${profile.name.split(' ')[0]}, tu entrenador de boxeo.`
                     )}`}
                     target="_blank"
@@ -134,6 +149,33 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
                   </a>
                 )}
               </div>
+
+              {/* Deuda */}
+              {totalDebt > 0 && (
+                <div className="bg-amber-950/40 border border-amber-800/60 rounded-xl p-3 flex items-center justify-between gap-3">
+                  <div>
+                    <span className="text-amber-300/90 font-semibold block">Debe</span>
+                    <span className="text-lg font-black text-amber-300">{fmt(totalDebt)}</span>
+                    <span className="text-[10px] text-amber-400/70 block">{pendingIncomes.length} pago(s) pendiente(s)</span>
+                  </div>
+                  <a
+                    href={waLink(
+                      client.whatsapp || client.phone,
+                      paymentReminderText(
+                        client.name,
+                        pendingIncomes.map(i => ({ concept: i.concept, date: i.date, amount: i.amount })),
+                        fmt,
+                        profile.name
+                      )
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-3 rounded-xl flex items-center gap-1.5"
+                  >
+                    <MessageCircle className="w-4 h-4" /> Recordar pago
+                  </a>
+                </div>
+              )}
 
               {/* Package Status Card */}
               {clientPackage ? (
@@ -213,6 +255,8 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
 
             </div>
           )}
+
+          {activeTab === 'progress' && <ClientProgress client={client} />}
 
           {/* 2. SESSIONS TAB */}
           {activeTab === 'sessions' && (

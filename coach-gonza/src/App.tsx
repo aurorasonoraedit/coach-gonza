@@ -15,6 +15,7 @@ import { BoxingLibraryView } from './components/library/BoxingLibraryView';
 import { SettingsView } from './components/settings/SettingsView';
 import { MoreView } from './components/more/MoreView';
 import { NewsView } from './components/news/NewsView';
+import { RoundTimerView } from './components/timer/RoundTimerView';
 
 import {
   LayoutDashboard,
@@ -26,7 +27,8 @@ import {
   BookOpen,
   Settings,
   Menu,
-  Newspaper
+  Newspaper,
+  Timer
 } from 'lucide-react';
 
 const MainContent: React.FC = () => {
@@ -39,6 +41,7 @@ const MainContent: React.FC = () => {
     { id: 'finances', label: 'Ingresos', icon: DollarSign },
     { id: 'packages', label: 'Paquetes', icon: Package },
     { id: 'events', label: 'Combates', icon: Swords },
+    { id: 'timer', label: 'Timer', icon: Timer },
     { id: 'library', label: 'Biblioteca', icon: BookOpen },
     { id: 'news', label: 'Noticias', icon: Newspaper },
     { id: 'settings', label: 'Ajustes', icon: Settings },
@@ -62,6 +65,8 @@ const MainContent: React.FC = () => {
         return <BoxingLibraryView />;
       case 'settings':
         return <SettingsView />;
+      case 'timer':
+        return <RoundTimerView />;
       case 'news':
         return <NewsView />;
       case 'more':

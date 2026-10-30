@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { Package, Swords, BookOpen, Settings, Newspaper } from 'lucide-react';
+import { Package, Swords, BookOpen, Settings, Newspaper, Timer } from 'lucide-react';
+import { RoundTimerView } from '../timer/RoundTimerView';
 import { PackagesView } from '../packages/PackagesView';
 import { EventsView } from '../events/EventsView';
 import { BoxingLibraryView } from '../library/BoxingLibraryView';
 import { SettingsView } from '../settings/SettingsView';
 import { NewsView } from '../news/NewsView';
 
-type SubTab = 'news' | 'packages' | 'events' | 'library' | 'settings';
+type SubTab = 'news' | 'timer' | 'packages' | 'events' | 'library' | 'settings';
 
 const TABS: { id: SubTab; label: string; icon: React.ElementType }[] = [
   { id: 'news', label: 'Noticias', icon: Newspaper },
+  { id: 'timer', label: 'Timer', icon: Timer },
   { id: 'packages', label: 'Paquetes', icon: Package },
   { id: 'events', label: 'Peleas', icon: Swords },
   { id: 'library', label: 'Rutinas', icon: BookOpen },
@@ -21,7 +23,7 @@ export const MoreView: React.FC = () => {
 
   return (
     <div className="space-y-5 pt-1 max-w-7xl mx-auto">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-1.5 grid grid-cols-5 gap-1 shadow-lg">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-1.5 grid grid-cols-6 gap-0.5 shadow-lg">
         {TABS.map(t => {
           const Icon = t.icon;
           const active = subTab === t.id;
@@ -34,13 +36,14 @@ export const MoreView: React.FC = () => {
               }`}
             >
               <Icon className="w-4 h-4 shrink-0" />
-              <span className="text-[10px] font-bold leading-none">{t.label}</span>
+              <span className="text-[9.5px] font-bold leading-none">{t.label}</span>
             </button>
           );
         })}
       </div>
 
       {subTab === 'news' && <NewsView />}
+      {subTab === 'timer' && <RoundTimerView />}
       {subTab === 'packages' && <PackagesView />}
       {subTab === 'events' && <EventsView />}
       {subTab === 'library' && <BoxingLibraryView />}

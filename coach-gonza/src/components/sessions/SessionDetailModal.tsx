@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { waBase } from '../../utils/whatsapp';
 import { useApp } from '../../context/AppContext';
 import { Session } from '../../types';
 import { X, Calendar, Clock, MapPin, User, DollarSign, Edit3, Trash2, Copy, MessageCircle, Dumbbell, AlertTriangle } from 'lucide-react';
@@ -163,7 +164,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session,
           {/* WhatsApp Direct Message button */}
           {client && client.whatsapp && (
             <a
-              href={`https://wa.me/${client.whatsapp}?text=${encodeURIComponent(
+              href={`${waBase(client.whatsapp || client.phone)}?text=${encodeURIComponent(
                 `Hola ${client.name}, sobre tu sesión de boxeo (${session.title}) el ${session.date} a las ${session.startTime}: `
               )}`}
               target="_blank"

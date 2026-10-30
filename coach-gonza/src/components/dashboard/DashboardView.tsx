@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { waBase } from '../../utils/whatsapp';
 import { useApp } from '../../context/AppContext';
 import {
   Calendar,
@@ -15,7 +16,7 @@ import {
   ChevronRight,
   ShieldCheck
 } from 'lucide-react';
-import { Newspaper } from 'lucide-react';
+import { Newspaper, Timer } from 'lucide-react';
 import { useNews } from '../../utils/news';
 import { NewsCard } from '../news/NewsView';
 import { getTodayString, formatCurrency, formatDateSpanish, formatShortDate } from '../../utils/dateUtils';
@@ -163,6 +164,13 @@ export const DashboardView: React.FC = () => {
             >
               <Swords className="w-3.5 h-3.5 text-amber-400" />
               <span>+ Evento</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('timer')}
+              className="col-span-2 bg-red-600 hover:bg-red-500 text-white text-xs font-black py-2.5 px-3 rounded-xl border border-red-500/60 flex items-center justify-center space-x-1.5 transition-all cursor-pointer active:scale-95 shadow-lg shadow-red-950/40"
+            >
+              <Timer className="w-4 h-4" />
+              <span>Timer de rounds</span>
             </button>
           </div>
         </div>
@@ -336,7 +344,7 @@ export const DashboardView: React.FC = () => {
                         {/* WhatsApp Quick Link */}
                         {client && client.whatsapp && (
                           <a
-                            href={`https://wa.me/${client.whatsapp}?text=${encodeURIComponent(
+                            href={`${waBase(client.whatsapp || client.phone)}?text=${encodeURIComponent(
                               `Hola ${client.name}, te recuerdo nuestra sesión de boxeo hoy a las ${session.startTime} en ${session.location}. ¡Nos vemos en el gimnasio! 🥊`
                             )}`}
                             target="_blank"
@@ -411,7 +419,7 @@ export const DashboardView: React.FC = () => {
                         </span>
                         {client && client.whatsapp && (
                           <a
-                            href={`https://wa.me/${client.whatsapp}?text=${encodeURIComponent(
+                            href={`${waBase(client.whatsapp || client.phone)}?text=${encodeURIComponent(
                               `Hola ${inc.clientName}, te escribo del gimnasio para recordarte el pago pendiente de ${formatCurrency(
                                 inc.amount,
                                 profile.currencySymbol

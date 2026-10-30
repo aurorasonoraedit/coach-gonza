@@ -49,7 +49,7 @@ export const BottomNav: React.FC = () => {
         {navItems.map(item => {
           const Icon = item.icon;
           const isActive = activeTab === item.id ||
-            (item.id === 'more' && ['more', 'news', 'packages', 'events', 'library', 'settings'].includes(activeTab));
+            (item.id === 'more' && ['more', 'news', 'timer', 'packages', 'events', 'library', 'settings'].includes(activeTab));
           return (
             <button
               key={item.id}

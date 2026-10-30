@@ -9,7 +9,8 @@ export const getTodayString = (): string => {
 };
 
 export const formatCurrency = (amount: number, currencySymbol = '$'): string => {
-  return `${currencySymbol}${amount.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+  if (amount < 0) return `−${formatCurrency(-amount, currencySymbol)}`;
+  return `${currencySymbol}${amount.toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
 };
 
 export const formatDateSpanish = (dateStr: string, includeDayName = true): string => {

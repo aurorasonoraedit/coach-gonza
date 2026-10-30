@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import { waLink, paymentReminderText } from '../../utils/whatsapp';
+import { ExpenseModal, categoryInfo, EXPENSE_CATEGORIES } from './ExpenseModal';
+import { Expense } from '../../types';
+import { exportExpensesToCSV } from '../../utils/exportUtils';
 import { useApp } from '../../context/AppContext';
 import {
   DollarSign,
@@ -12,7 +16,9 @@ import {
   Edit3,
   MessageCircle,
   BarChart2,
-  PieChart as PieChartIcon
+  PieChart as PieChartIcon,
+  Receipt,
+  Wallet
 } from 'lucide-react';
 import {
   BarChart,
@@ -31,10 +37,13 @@ import { IncomeModal } from './IncomeModal';
 import { exportIncomesToCSV } from '../../utils/exportUtils';
 
 export const FinancesView: React.FC = () => {
-  const { incomes, profile, clients, deleteIncome, updateIncome } = useApp();
+  const { incomes, profile, clients, deleteIncome, updateIncome, expenses, deleteExpense } = useApp();
 
-  const [activeTab, setActiveTab] = useState<'all' | 'pagado' | 'pendiente'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'pagado' | 'pendiente' | 'gastos'>('all');
   const [modalOpen, setModalOpen] = useState(false);
+  const [expenseModalOpen, setExpenseModalOpen] = useState(false);
+  const [expenseToEdit, setExpenseToEdit] = useState<Expense | null>(null);
+  const fmt = (n: number) => formatCurrency(n, profile.currencySymbol);
   const [incomeToEdit, setIncomeToEdit] = useState<Income | null>(null);
 
   const todayStr = getTodayString();
@@ -54,6 +63,25 @@ export const FinancesView: React.FC = () => {
     .reduce((sum, i) => sum + i.amount, 0);
 
   const pendingList = incomes.filter(i => i.status === 'pendiente');
+
+  // Gastos y ganancia del mes
+  const monthExpensesList = expenses.filter(e => e.date.startsWith(currentMonthPrefix));
+  const monthExpenses = monthExpensesList.reduce((sum, e) => sum + e.amount, 0);
+  const monthNet = monthPaid - monthExpenses;
+  const sortedExpenses = [...expenses].sort((a, b) => b.date.localeCompare(a.date));
+  const expenseByCategory = EXPENSE_CATEGORIES
+    .map(c => ({ ...c, total: monthExpensesList.filter(e => e.category === c.id).reduce((s, e) => s + e.amount, 0) }))
+    .filter(c => c.total > 0)
+    .sort((a, b) => b.total - a.total);
+  const monthName = new Date().toLocaleDateString('es-AR', { month: 'long' });
+
+  const reminderLink = (inc: Income) => {
+    const client = clients.find(c => c.id === inc.clientId) || clients.find(c => c.name === inc.clientName);
+    return waLink(
+      client?.whatsapp || client?.phone,
+      paymentReminderText(inc.clientName, [{ concept: inc.concept, date: inc.date, amount: inc.amount }], fmt, profile.name)
+    );
+  };
 
   // Filtered income list
   const filteredIncomes = incomes
@@ -99,16 +127,16 @@ export const FinancesView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-24 pt-2 px-4 max-w-7xl mx-auto">
+    <div className="space-y-5 pt-1 max-w-7xl mx-auto">
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-lg">
         <div>
           <h1 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-green-500" /> Control de Ingresos & Finanzas
+            <DollarSign className="w-5 h-5 text-green-500" /> Ingresos y Gastos
           </h1>
           <p className="text-xs text-zinc-400 mt-0.5">
-            Registro de cobros, resumen mensual y reporte de pagos pendientes.
+            Lo que cobrás, lo que gastás y lo que te queda de ganancia.
           </p>
         </div>
 
@@ -120,6 +148,17 @@ export const FinancesView: React.FC = () => {
           >
             <Download className="w-4 h-4 text-blue-400" />
             <span className="hidden sm:inline">Exportar CSV</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setExpenseToEdit(null);
+              setExpenseModalOpen(true);
+            }}
+            className="bg-zinc-800 hover:bg-zinc-700 text-red-300 text-xs font-bold px-3 py-2.5 rounded-xl flex items-center space-x-1 transition-all cursor-pointer border border-red-900/60"
+          >
+            <Receipt className="w-4 h-4" />
+            <span>+ Gasto</span>
           </button>
 
           <button
@@ -136,30 +175,43 @@ export const FinancesView: React.FC = () => {
       </div>
 
       {/* Top Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-md">
-          <span className="text-zinc-400 text-xs font-medium block">Ingresos Hoy</span>
-          <p className="text-2xl font-black text-white mt-1">
-            {formatCurrency(todayPaid, profile.currencySymbol)}
-          </p>
-          <span className="text-[10px] text-zinc-500">Recaudado el {formatShortDate(todayStr)}</span>
+          <span className="text-zinc-400 text-xs font-medium block">Cobrado hoy</span>
+          <p className="text-xl font-black text-white mt-1">{fmt(todayPaid)}</p>
+          <span className="text-[10px] text-zinc-500">{formatShortDate(todayStr)}</span>
         </div>
 
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-md">
-          <span className="text-zinc-400 text-xs font-medium block">Total Mes (Cobrado)</span>
-          <p className="text-2xl font-black text-green-400 mt-1">
-            {formatCurrency(monthPaid, profile.currencySymbol)}
-          </p>
-          <span className="text-[10px] text-zinc-500">Ingresos acumulados del mes</span>
+          <span className="text-zinc-400 text-xs font-medium block">Cobrado en {monthName}</span>
+          <p className="text-xl font-black text-green-400 mt-1">{fmt(monthPaid)}</p>
+          <span className="text-[10px] text-zinc-500">Ingresos del mes</span>
         </div>
 
-        <div className="bg-zinc-900 border border-amber-900/40 rounded-2xl p-4 shadow-md">
-          <span className="text-zinc-400 text-xs font-medium block">Cobros Pendientes</span>
-          <p className="text-2xl font-black text-amber-400 mt-1">
-            {formatCurrency(totalPending, profile.currencySymbol)}
-          </p>
-          <span className="text-[10px] text-amber-400/80 font-semibold">{pendingList.length} transacciones por cobrar</span>
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-md">
+          <span className="text-zinc-400 text-xs font-medium block">Gastos de {monthName}</span>
+          <p className="text-xl font-black text-red-400 mt-1">{fmt(monthExpenses)}</p>
+          <span className="text-[10px] text-zinc-500">{monthExpensesList.length} gasto(s)</span>
         </div>
+
+        <div className={`rounded-2xl p-4 shadow-md border ${monthNet >= 0 ? 'bg-emerald-950/40 border-emerald-800/60' : 'bg-red-950/40 border-red-800/60'}`}>
+          <span className="text-zinc-300 text-xs font-semibold flex items-center gap-1">
+            <Wallet className="w-3.5 h-3.5" /> Ganancia de {monthName}
+          </span>
+          <p className={`text-xl font-black mt-1 ${monthNet >= 0 ? 'text-emerald-300' : 'text-red-300'}`}>{fmt(monthNet)}</p>
+          <span className="text-[10px] text-zinc-400">Cobrado − gastos</span>
+        </div>
+
+        <button
+          onClick={() => setActiveTab('pendiente')}
+          className="col-span-2 lg:col-span-4 text-left bg-zinc-900 border border-amber-900/40 rounded-2xl p-4 shadow-md flex items-center justify-between cursor-pointer hover:border-amber-700/60"
+        >
+          <div>
+            <span className="text-zinc-400 text-xs font-medium block">Por cobrar</span>
+            <p className="text-xl font-black text-amber-400 mt-0.5">{fmt(totalPending)}</p>
+          </div>
+          <span className="text-[11px] text-amber-400/90 font-semibold">{pendingList.length} pendiente(s) · Ver ›</span>
+        </button>
       </div>
 
       {/* Recharts Analytics Section */}
@@ -228,10 +280,10 @@ export const FinancesView: React.FC = () => {
         
         {/* Table Tabs */}
         <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-          <div className="flex items-center space-x-2 text-xs font-bold">
+          <div className="flex items-center gap-2 text-xs font-bold overflow-x-auto scrollbar-none">
             <button
               onClick={() => setActiveTab('all')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'all' ? 'bg-red-600 text-white shadow' : 'bg-zinc-800 text-zinc-400 hover:text-white'
               }`}
             >
@@ -239,7 +291,7 @@ export const FinancesView: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('pagado')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'pagado' ? 'bg-green-600 text-white shadow' : 'bg-zinc-800 text-zinc-400 hover:text-white'
               }`}
             >
@@ -247,17 +299,99 @@ export const FinancesView: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('pendiente')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'pendiente' ? 'bg-amber-600 text-white shadow' : 'bg-zinc-800 text-zinc-400 hover:text-white'
               }`}
             >
               Pendientes ({pendingList.length})
             </button>
+            <button
+              onClick={() => setActiveTab('gastos')}
+              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                activeTab === 'gastos' ? 'bg-red-700 text-white shadow' : 'bg-zinc-800 text-zinc-400 hover:text-white'
+              }`}
+            >
+              Gastos ({expenses.length})
+            </button>
           </div>
+
         </div>
 
         {/* List Content */}
-        {filteredIncomes.length === 0 ? (
+        {activeTab === 'gastos' ? (
+          <div className="space-y-3">
+            {expenses.length > 0 && (
+              <div className="flex justify-end">
+                <button
+                  onClick={() => exportExpensesToCSV(expenses)}
+                  className="text-[11px] font-semibold px-2.5 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 flex items-center gap-1 cursor-pointer"
+                >
+                  <Download className="w-3.5 h-3.5 text-blue-400" /> Exportar gastos
+                </button>
+              </div>
+            )}
+            {expenseByCategory.length > 0 && (
+              <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 space-y-2">
+                <p className="text-[11px] font-bold text-zinc-300 uppercase tracking-wider">En qué se fue la plata en {monthName}</p>
+                {expenseByCategory.map(c => (
+                  <div key={c.id} className="text-[11px]">
+                    <div className="flex justify-between text-zinc-300">
+                      <span>{c.emoji} {c.label}</span>
+                      <span className="font-bold text-white">{fmt(c.total)}</span>
+                    </div>
+                    <div className="h-1.5 bg-zinc-800 rounded-full mt-1 overflow-hidden">
+                      <div className="h-full bg-red-500 rounded-full" style={{ width: `${(c.total / monthExpenses) * 100}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {sortedExpenses.length === 0 ? (
+              <div className="text-center py-8 space-y-3">
+                <p className="text-xs text-zinc-500 italic">Todavía no cargaste gastos.</p>
+                <button
+                  onClick={() => { setExpenseToEdit(null); setExpenseModalOpen(true); }}
+                  className="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer"
+                >
+                  + Registrar el primero
+                </button>
+              </div>
+            ) : (
+              sortedExpenses.map(exp => {
+                const cat = categoryInfo(exp.category);
+                return (
+                  <div key={exp.id} className="bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 flex items-center justify-between gap-3">
+                    <div className="flex items-start gap-3 min-w-0">
+                      <div className="p-2 rounded-xl bg-red-950/60 border border-red-900/60 text-sm shrink-0">{cat.emoji}</div>
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-white text-xs truncate">{exp.concept}</h4>
+                        <p className="text-[11px] text-zinc-400 mt-0.5">{cat.label} • {formatShortDate(exp.date)}</p>
+                        {exp.notes && <p className="text-[10px] text-zinc-500 italic mt-0.5 truncate">{exp.notes}</p>}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="text-sm font-black text-red-400 mr-1">−{fmt(exp.amount)}</span>
+                      <button
+                        onClick={() => { setExpenseToEdit(exp); setExpenseModalOpen(true); }}
+                        className="p-1.5 rounded-lg bg-zinc-800 border border-zinc-700 cursor-pointer"
+                        title="Editar"
+                      >
+                        <Edit3 className="w-3.5 h-3.5 text-blue-400" />
+                      </button>
+                      <button
+                        onClick={() => { if (confirm('¿Eliminar este gasto?')) deleteExpense(exp.id); }}
+                        className="p-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-red-300 cursor-pointer"
+                        title="Eliminar"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        ) : filteredIncomes.length === 0 ? (
           <p className="text-xs text-zinc-500 py-8 text-center italic">No hay ingresos registrados en esta categoría</p>
         ) : (
           <div className="space-y-2.5">
@@ -300,22 +434,15 @@ export const FinancesView: React.FC = () => {
                     <div className="flex items-center space-x-1">
                       {inc.status === 'pendiente' && (
                         <>
-                          {client && client.whatsapp && (
-                            <a
-                              href={`https://wa.me/${client.whatsapp}?text=${encodeURIComponent(
-                                `Hola ${client.name}, te escribo para recordarte el pago pendiente de ${formatCurrency(
-                                  inc.amount,
-                                  profile.currencySymbol
-                                )} por ${inc.concept}. Gracias! 🥊`
-                              )}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="p-1.5 rounded-lg bg-emerald-950 text-emerald-400 border border-emerald-800 hover:bg-emerald-900 transition-colors"
-                              title="Cobrar vía WhatsApp"
-                            >
-                              <MessageCircle className="w-3.5 h-3.5" />
-                            </a>
-                          )}
+                          <a
+                            href={reminderLink(inc)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800 hover:bg-emerald-900 transition-colors text-[10px] font-bold"
+                            title={client?.whatsapp || client?.phone ? 'Mandar recordatorio de pago por WhatsApp' : 'Sin número cargado: elegís el contacto en WhatsApp'}
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" /> Cobrar
+                          </a>
                           <button
                             onClick={() => handleMarkPaid(inc.id)}
                             className="bg-green-600 hover:bg-green-500 text-white font-bold text-[10px] px-2 py-1 rounded-lg cursor-pointer"
@@ -353,6 +480,16 @@ export const FinancesView: React.FC = () => {
         )}
 
       </div>
+
+      {expenseModalOpen && (
+        <ExpenseModal
+          expenseToEdit={expenseToEdit || undefined}
+          onClose={() => {
+            setExpenseModalOpen(false);
+            setExpenseToEdit(null);
+          }}
+        />
+      )}
 
       {/* Modal to Create/Edit Income */}
       {modalOpen && (

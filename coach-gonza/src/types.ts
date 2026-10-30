@@ -32,6 +32,8 @@ export interface Client {
   totalSessionsCompleted?: number;
   avatarUrl?: string;
   createdAt: string;
+  targetWeight?: number; // kg (peso objetivo / categoría para pesaje)
+  weightClass?: string; // ej. "Welter 69 kg"
 }
 
 export interface Session {
@@ -129,4 +131,30 @@ export interface TrainerProfile {
   workStartTime: string;
   workEndTime: string;
   acceptedPaymentMethods: PaymentMethod[];
+}
+
+export type ExpenseCategory =
+  | 'alquiler'
+  | 'equipamiento'
+  | 'transporte'
+  | 'federacion'
+  | 'publicidad'
+  | 'servicios'
+  | 'otro';
+
+export interface Expense {
+  id: string;
+  date: string; // YYYY-MM-DD
+  concept: string;
+  category: ExpenseCategory;
+  amount: number;
+  notes?: string;
+}
+
+export interface ProgressEntry {
+  id: string;
+  clientId: string;
+  date: string; // YYYY-MM-DD
+  weight?: number; // kg
+  notes?: string;
 }

@@ -8,7 +8,9 @@ import {
   Reminder,
   BoxingRoutine,
   TrainerProfile,
-  PaymentMethod
+  PaymentMethod,
+  Expense,
+  ProgressEntry
 } from '../types';
 import {
   initialTrainerProfile,
@@ -18,7 +20,10 @@ import {
   initialPackages,
   initialEvents,
   initialReminders,
-  initialRoutines
+  initialRoutines,
+  initialExpenses,
+  initialProgress,
+  DEMO_TODAY
 } from '../data/initialData';
 import { getTodayString } from '../utils/dateUtils';
 
@@ -52,6 +57,13 @@ interface AppContextType {
   addReminder: (reminderData: Omit<Reminder, 'id' | 'isCompleted'>) => Reminder;
   toggleReminder: (id: string) => void;
   deleteReminder: (id: string) => void;
+  expenses: Expense[];
+  addExpense: (data: Omit<Expense, 'id'>) => Expense;
+  updateExpense: (id: string, data: Partial<Expense>) => void;
+  deleteExpense: (id: string) => void;
+  progress: ProgressEntry[];
+  addProgress: (data: Omit<ProgressEntry, 'id'>) => ProgressEntry;
+  deleteProgress: (id: string) => void;
   routines: BoxingRoutine[];
   addRoutine: (routineData: Omit<BoxingRoutine, 'id'>) => BoxingRoutine;
   updateRoutine: (id: string, routineData: Partial<BoxingRoutine>) => void;
@@ -104,7 +116,9 @@ const STORAGE_KEYS = {
   EVENTS: 'boxcoach_events_v1',
   REMINDERS: 'boxcoach_reminders_v1',
   ROUTINES: 'boxcoach_routines_v1',
-  THEME: 'boxcoach_theme_v1'
+  THEME: 'boxcoach_theme_v1',
+  EXPENSES: 'boxcoach_expenses_v1',
+  PROGRESS: 'boxcoach_progress_v1'
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -124,6 +138,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [reminders, setReminders] = useState<Reminder[]>(() => load(STORAGE_KEYS.REMINDERS, [] as Reminder[]));
 
   const [routines, setRoutines] = useState<BoxingRoutine[]>(() => load(STORAGE_KEYS.ROUTINES, initialRoutines as BoxingRoutine[]));
+
+  const [expenses, setExpenses] = useState<Expense[]>(() => load(STORAGE_KEYS.EXPENSES, [] as Expense[]));
+  const [progress, setProgress] = useState<ProgressEntry[]>(() => load(STORAGE_KEYS.PROGRESS, [] as ProgressEntry[]));
 
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.THEME);
@@ -167,6 +184,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.ROUTINES, JSON.stringify(routines));
   }, [routines]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.EXPENSES, JSON.stringify(expenses));
+  }, [expenses]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.PROGRESS, JSON.stringify(progress));
+  }, [progress]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.THEME, theme);
@@ -444,6 +469,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast('Recordatorio eliminado');
   };
 
+  // Gastos
+  const addExpense = (data: Omit<Expense, 'id'>): Expense => {
+    const e: Expense = { ...data, id: `exp-${Date.now()}` };
+    setExpenses(prev => [e, ...prev]);
+    showToast('Gasto registrado');
+    return e;
+  };
+
+  const updateExpense = (id: string, data: Partial<Expense>) => {
+    setExpenses(prev => prev.map(e => (e.id === id ? { ...e, ...data } : e)));
+    showToast('Gasto actualizado');
+  };
+
+  const deleteExpense = (id: string) => {
+    setExpenses(prev => prev.filter(e => e.id !== id));
+    showToast('Gasto eliminado');
+  };
+
+  // Progreso de alumnos
+  const addProgress = (data: Omit<ProgressEntry, 'id'>): ProgressEntry => {
+    const p: ProgressEntry = { ...data, id: `prg-${Date.now()}` };
+    setProgress(prev => [p, ...prev]);
+    showToast('Registro de progreso guardado');
+    return p;
+  };
+
+  const deleteProgress = (id: string) => {
+    setProgress(prev => prev.filter(p => p.id !== id));
+    showToast('Registro eliminado');
+  };
+
   // Routine actions
   const addRoutine = (routineData: Omit<BoxingRoutine, 'id'>): BoxingRoutine => {
     const newRot: BoxingRoutine = {
@@ -465,16 +521,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast('Rutina eliminada');
   };
 
-  // Reset to initial demo data
+  // Reset to initial demo data (corrido a la fecha de hoy)
   const resetToInitialData = () => {
+    const [y, m, d] = DEMO_TODAY.split('-').map(Number);
+    const [ty, tm, td] = getTodayString().split('-').map(Number);
+    const offsetDays = Math.round((Date.UTC(ty, tm - 1, td) - Date.UTC(y, m - 1, d)) / 86400000);
+    const shift = (iso: string) => {
+      if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return iso;
+      const [a, b, c] = iso.split('-').map(Number);
+      const dt = new Date(Date.UTC(a, b - 1, c + offsetDays));
+      return dt.toISOString().slice(0, 10);
+    };
     setProfileState(initialTrainerProfile);
-    setClients(initialClients);
-    setSessions(initialSessions);
-    setIncomes(initialIncomes);
+    setClients(initialClients.map(c => ({ ...c, createdAt: shift(c.createdAt) })));
+    setSessions(initialSessions.map(x => ({ ...x, date: shift(x.date) })));
+    setIncomes(normalizeIncomes(initialIncomes.map(x => ({ ...x, date: shift(x.date) }))));
     setPackages(initialPackages);
-    setEvents(initialEvents);
-    setReminders(initialReminders);
+    setEvents(initialEvents.map(x => ({ ...x, date: shift(x.date) })));
+    setReminders(initialReminders.map(x => ({ ...x, dueDate: shift(x.dueDate) })));
     setRoutines(initialRoutines);
+    setExpenses(initialExpenses.map(x => ({ ...x, date: shift(x.date) })));
+    setProgress(initialProgress.map(x => ({ ...x, date: shift(x.date) })));
     showToast('Datos de ejemplo cargados');
   };
 
@@ -484,6 +551,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setIncomes([]);
     setEvents([]);
     setReminders([]);
+    setExpenses([]);
+    setProgress([]);
     showToast('Datos borrados. ¡A empezar de cero!');
   };
 
@@ -491,7 +560,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     app: 'BoxCoach',
     version: 2,
     exportDate: new Date().toISOString(),
-    profile, clients, sessions, incomes, packages, events, reminders, routines
+    profile, clients, sessions, incomes, packages, events, reminders, routines, expenses, progress
   });
 
   const restoreBackup = (data: any): boolean => {
@@ -506,6 +575,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (Array.isArray(data.events)) setEvents(data.events);
     if (Array.isArray(data.reminders)) setReminders(data.reminders);
     if (Array.isArray(data.routines)) setRoutines(data.routines);
+    setExpenses(Array.isArray(data.expenses) ? data.expenses : []);
+    setProgress(Array.isArray(data.progress) ? data.progress : []);
     showToast('Copia de seguridad restaurada');
     return true;
   };
@@ -552,6 +623,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addReminder,
         toggleReminder,
         deleteReminder,
+        expenses,
+        addExpense,
+        updateExpense,
+        deleteExpense,
+        progress,
+        addProgress,
+        deleteProgress,
         routines,
         addRoutine,
         updateRoutine,

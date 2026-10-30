@@ -1,4 +1,4 @@
-import { Session, Client, Income } from '../types';
+import { Session, Client, Income, Expense } from '../types';
 
 export const exportSessionsToCSV = (sessions: Session[]) => {
   const headers = ['ID', 'Título', 'Tipo', 'Fecha', 'Hora Inicio', 'Hora Fin', 'Cliente', 'Lugar', 'Estado', 'Estado Pago', 'Precio ($)', 'Notas'];
@@ -55,6 +55,19 @@ export const exportClientsToCSV = (clients: Client[]) => {
 
   const csvContent = [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
   downloadFile(csvContent, `BoxCoach_Clientes_${new Date().toISOString().slice(0, 10)}.csv`, 'text/csv');
+};
+
+export const exportExpensesToCSV = (expenses: Expense[]) => {
+  const headers = ['Fecha', 'Concepto', 'Categoría', 'Monto ($)', 'Notas'];
+  const rows = expenses.map(e => [
+    e.date,
+    `"${e.concept.replace(/"/g, '""')}"`,
+    e.category,
+    e.amount,
+    `"${(e.notes || '').replace(/"/g, '""')}"`
+  ]);
+  const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  downloadFile(csvContent, `BoxCoach_Gastos_${new Date().toISOString().slice(0, 10)}.csv`, 'text/csv');
 };
 
 const downloadFile = (content: string, filename: string, mimeType: string) => {

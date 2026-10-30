@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { waBase } from '../../utils/whatsapp';
 import { useApp } from '../../context/AppContext';
 import { Users, Search, Plus, MessageCircle, Phone, Trophy, Download, Package } from 'lucide-react';
 import { Client, ClientLevel } from '../../types';
@@ -135,7 +136,7 @@ export const ClientsView: React.FC = () => {
 
                     {c.whatsapp && (
                       <a
-                        href={`https://wa.me/${c.whatsapp}?text=${encodeURIComponent(`Hola ${c.name}, te saludo de parte del entrenador.`)}`}
+                        href={`${waBase(c.whatsapp || c.phone)}?text=${encodeURIComponent(`Hola ${c.name}, te saludo de parte del entrenador.`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-2 rounded-xl bg-emerald-950/80 text-emerald-400 border border-emerald-800 hover:bg-emerald-900 transition-colors"
