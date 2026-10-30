@@ -5,6 +5,7 @@ import { FightEvent } from '../../types';
 import { formatDateSpanish, formatShortDate } from '../../utils/dateUtils';
 import { EventModal } from './EventModal';
 import { RivalModal, recordText, STANCE_LABEL } from './RivalModal';
+import { buildFightPlan, AREA_LABEL } from '../../utils/fightPlan';
 
 export const EventsView: React.FC = () => {
   const { events, deleteEvent } = useApp();
@@ -144,7 +145,20 @@ export const EventsView: React.FC = () => {
                   {evt.rival.strengths && (
                     <p className="text-[11px] text-zinc-300"><span className="font-bold text-red-400">💪 Fuerte:</span> {evt.rival.strengths}</p>
                   )}
-                  <span className="text-[10px] text-zinc-500 block">Tocá para ver o editar la ficha completa</span>
+                  {(() => {
+                    const tips = buildFightPlan(evt.rival).filter(t => t.area !== 'clave').slice(0, 3);
+                    return tips.length ? (
+                      <div className="border-t border-zinc-800 pt-1.5 mt-1 space-y-1">
+                        <span className="text-[10px] font-extrabold text-amber-400 uppercase tracking-wider block">💡 Cómo pelearle</span>
+                        {tips.map((t, i) => (
+                          <p key={i} className="text-[11px] text-zinc-200 leading-snug">
+                            {AREA_LABEL[t.area].emoji} {t.text}
+                          </p>
+                        ))}
+                      </div>
+                    ) : null;
+                  })()}
+                  <span className="text-[10px] text-zinc-500 block">Tocá para ver la ficha y el plan completo</span>
                 </button>
               ) : (evt.type === 'pelea' || evt.type === 'competencia') ? (
                 <button

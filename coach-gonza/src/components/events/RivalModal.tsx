@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, Save, Search, Youtube, Instagram, Newspaper, Star, Trash2 } from 'lucide-react';
+import { X, Save, Search, Youtube, Instagram, Newspaper, Star, Trash2, Lightbulb, ClipboardCheck } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { FightEvent, Rival, Stance } from '../../types';
+import { buildFightPlan, planToText, AREA_LABEL } from '../../utils/fightPlan';
 
 export const STYLE_TAGS = [
   'Presionador',
@@ -83,31 +84,43 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
   const toggleStyle = (t: string) =>
     setStyles(prev => (prev.includes(t) ? prev.filter(x => x !== t) : [...prev, t]));
 
+  const buildRival = (): Rival => ({
+    name: name.trim(),
+    nickname: nickname.trim() || undefined,
+    wins: num(wins),
+    losses: num(losses),
+    draws: num(draws),
+    kos: num(kos),
+    gym: gym.trim() || undefined,
+    city: city.trim() || undefined,
+    stance: stance || undefined,
+    age: num(age),
+    height: num(height),
+    level: level || undefined,
+    styles: styles.length ? styles : undefined,
+    strengths: strengths.trim() || undefined,
+    weaknesses: weaknesses.trim() || undefined,
+    notes: notes.trim() || undefined,
+    boxrecUrl: boxrecUrl.trim() || undefined,
+    videoUrl: videoUrl.trim() || undefined,
+    instagram: instagram.trim() || undefined
+  });
+
+  const plan = buildFightPlan(buildRival());
+
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
-    const rival: Rival = {
-      name: name.trim(),
-      nickname: nickname.trim() || undefined,
-      wins: num(wins),
-      losses: num(losses),
-      draws: num(draws),
-      kos: num(kos),
-      gym: gym.trim() || undefined,
-      city: city.trim() || undefined,
-      stance: stance || undefined,
-      age: num(age),
-      height: num(height),
-      level: level || undefined,
-      styles: styles.length ? styles : undefined,
-      strengths: strengths.trim() || undefined,
-      weaknesses: weaknesses.trim() || undefined,
-      notes: notes.trim() || undefined,
-      boxrecUrl: boxrecUrl.trim() || undefined,
-      videoUrl: videoUrl.trim() || undefined,
-      instagram: instagram.trim() || undefined
-    };
-    updateEvent(event.id, { rival });
+    updateEvent(event.id, { rival: buildRival() });
+    onClose();
+  };
+
+  const handleSaveWithPlan = () => {
+    if (!name.trim()) return;
+    const rival = buildRival();
+    const text = planToText(rival, plan);
+    const cornerNotes = event.cornerNotes ? `${event.cornerNotes}\n\n${text}` : text;
+    updateEvent(event.id, { rival, cornerNotes });
     onClose();
   };
 
@@ -286,6 +299,30 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
             </div>
           </div>
 
+          {/* Plan sugerido */}
+          <div className="bg-gradient-to-b from-amber-950/40 to-zinc-950 border border-amber-800/50 rounded-xl p-3 space-y-2">
+            <p className="text-xs font-black text-amber-300 flex items-center gap-1.5">
+              <Lightbulb className="w-4 h-4" /> Cómo pelearle (sugerido)
+            </p>
+            {plan.length === 0 ? (
+              <p className="text-[11px] text-zinc-400">
+                Completá guardia, estilo, altura o récord y acá aparecen las sugerencias para la esquina.
+              </p>
+            ) : (
+              <ul className="space-y-1.5">
+                {plan.map((t, i) => (
+                  <li key={i} className="text-[11px] text-zinc-200 leading-snug flex gap-1.5">
+                    <span className="shrink-0">{AREA_LABEL[t.area].emoji}</span>
+                    <span>
+                      <span className="font-bold text-amber-200">{AREA_LABEL[t.area].label}:</span> {t.text}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="text-[10px] text-zinc-500">Pautas generales según la ficha. El plan final lo decidís vos.</p>
+          </div>
+
           {/* Links guardados */}
           <div className="space-y-2">
             <label className={labelCls}>Links que encontraste (opcional)</label>
@@ -294,13 +331,23 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
             <input value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="Instagram (link o @usuario)" className={inputCls} />
           </div>
 
-          <div className="flex items-center gap-2 pt-1">
+          <div className="flex flex-wrap items-center gap-2 pt-1">
             <button
               type="submit"
               className="flex-1 bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm py-2.5 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Save className="w-4 h-4" /> Guardar ficha
             </button>
+            {plan.length > 0 && (
+              <button
+                type="button"
+                onClick={handleSaveWithPlan}
+                title="Guarda la ficha y suma el plan a la estrategia de esquina"
+                className="flex-1 bg-zinc-800 hover:bg-zinc-700 border border-amber-700/60 text-amber-200 font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <ClipboardCheck className="w-4 h-4" /> Guardar + pasar a la esquina
+              </button>
+            )}
             {r && (
               <button
                 type="button"
