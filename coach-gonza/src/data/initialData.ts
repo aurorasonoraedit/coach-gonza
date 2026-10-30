@@ -352,7 +352,25 @@ export const initialEvents: FightEvent[] = [
     participantOrClient: "Mateo Rossi (Vs. J. Ramírez 64kg) — Rincón Palma",
     notes: "Pesaje oficial a las 10:00 AM. Control estricto de hidratación y vendaje oficial.",
     isImportant: true,
-    cornerNotes: "Rival con alcance largo. Aplicar 'Reforzando la muralla': achicar distancia con cruzados abajo y paso al costado."
+    cornerNotes: "Rival con alcance largo. Aplicar 'Reforzando la muralla': achicar distancia con cruzados abajo y paso al costado.",
+    rival: {
+      name: "Julián Ramírez",
+      nickname: "El Flaco",
+      wins: 9,
+      losses: 3,
+      draws: 1,
+      kos: 4,
+      gym: "Club Atlético Unión",
+      city: "Campana",
+      stance: "zurdo",
+      age: 21,
+      height: 181,
+      level: 4,
+      styles: ["Boxeador de distancia", "Buen jab", "Buenas piernas"],
+      strengths: "Jab largo y rápido, se mueve bien hacia su izquierda.",
+      weaknesses: "Baja la derecha cuando tira el cross. Se incomoda si lo presionan contra las cuerdas.",
+      notes: "Perdió sus 3 peleas contra presionadores. Viene de ganar por puntos hace un mes."
+    }
   },
   {
     id: "evt-3",

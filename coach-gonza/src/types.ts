@@ -92,6 +92,32 @@ export interface FightEvent {
   notes?: string;
   isImportant?: boolean;
   cornerNotes?: string; // Táctica / Estrategia de la esquina
+  rival?: Rival;
+}
+
+export type Stance = 'ortodoxo' | 'zurdo' | 'cambia';
+
+/** Ficha de scouting del rival de una pelea */
+export interface Rival {
+  name: string;
+  nickname?: string;
+  wins?: number;
+  losses?: number;
+  draws?: number;
+  kos?: number;
+  gym?: string;
+  city?: string;
+  stance?: Stance;
+  age?: number;
+  height?: number; // cm
+  level?: number; // 1 a 5: calidad estimada
+  styles?: string[];
+  strengths?: string;
+  weaknesses?: string;
+  notes?: string;
+  boxrecUrl?: string;
+  videoUrl?: string;
+  instagram?: string;
 }
 
 export interface Reminder {

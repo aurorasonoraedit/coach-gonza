@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Swords, Plus, Calendar, MapPin, Edit3, Trash2, Star, ShieldAlert } from 'lucide-react';
+import { Swords, Plus, MapPin, Edit3, Trash2, Star, UserSearch, ExternalLink } from 'lucide-react';
 import { FightEvent } from '../../types';
 import { formatDateSpanish, formatShortDate } from '../../utils/dateUtils';
 import { EventModal } from './EventModal';
+import { RivalModal, recordText, STANCE_LABEL } from './RivalModal';
 
 export const EventsView: React.FC = () => {
   const { events, deleteEvent } = useApp();
   const [modalOpen, setModalOpen] = useState(false);
   const [eventToEdit, setEventToEdit] = useState<FightEvent | null>(null);
+  const [rivalEventId, setRivalEventId] = useState<string | null>(null);
+  const rivalEvent = events.find(e => e.id === rivalEventId) || null;
+
+  const igLink = (v: string) =>
+    v.startsWith('http') ? v : `https://instagram.com/${v.replace(/^@/, '')}`;
 
   const handleDelete = (id: string) => {
     if (confirm('¿Eliminar este evento o pelea de la agenda?')) {
@@ -94,6 +100,81 @@ export const EventsView: React.FC = () => {
                 </p>
               )}
 
+              {/* Rival */}
+              {evt.rival ? (
+                <button
+                  onClick={() => setRivalEventId(evt.id)}
+                  className="w-full text-left bg-zinc-950 border border-red-900/50 rounded-xl p-3 text-xs space-y-1.5 cursor-pointer hover:border-red-700/70"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-extrabold text-red-400 uppercase tracking-wider block">Rival</span>
+                      <span className="font-black text-white text-sm">
+                        {evt.rival.name}
+                        {evt.rival.nickname && <span className="text-zinc-400 font-semibold"> "{evt.rival.nickname}"</span>}
+                      </span>
+                    </div>
+                    {evt.rival.level ? (
+                      <span className="flex shrink-0">
+                        {[1, 2, 3, 4, 5].map(n => (
+                          <Star key={n} className={`w-3.5 h-3.5 ${n <= (evt.rival!.level || 0) ? 'text-amber-400 fill-amber-400' : 'text-zinc-700'}`} />
+                        ))}
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {recordText(evt.rival) && (
+                      <span className="px-2 py-0.5 rounded-md bg-zinc-800 border border-zinc-700 text-white font-bold">{recordText(evt.rival)}</span>
+                    )}
+                    {evt.rival.stance && (
+                      <span className="px-2 py-0.5 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-200">{STANCE_LABEL[evt.rival.stance]}</span>
+                    )}
+                    {(evt.rival.gym || evt.rival.city) && (
+                      <span className="px-2 py-0.5 rounded-md bg-zinc-800 border border-zinc-700 text-zinc-200">
+                        📍 {[evt.rival.gym, evt.rival.city].filter(Boolean).join(', ')}
+                      </span>
+                    )}
+                  </div>
+                  {evt.rival.styles && evt.rival.styles.length > 0 && (
+                    <p className="text-[11px] text-amber-300/90">{evt.rival.styles.join(' · ')}</p>
+                  )}
+                  {evt.rival.weaknesses && (
+                    <p className="text-[11px] text-zinc-300"><span className="font-bold text-emerald-400">🎯 Débil:</span> {evt.rival.weaknesses}</p>
+                  )}
+                  {evt.rival.strengths && (
+                    <p className="text-[11px] text-zinc-300"><span className="font-bold text-red-400">💪 Fuerte:</span> {evt.rival.strengths}</p>
+                  )}
+                  <span className="text-[10px] text-zinc-500 block">Tocá para ver o editar la ficha completa</span>
+                </button>
+              ) : (evt.type === 'pelea' || evt.type === 'competencia') ? (
+                <button
+                  onClick={() => setRivalEventId(evt.id)}
+                  className="w-full bg-zinc-950 border border-dashed border-zinc-700 hover:border-red-700 rounded-xl p-3 text-xs font-bold text-zinc-300 flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <UserSearch className="w-4 h-4 text-red-400" /> Armar ficha del rival
+                </button>
+              ) : null}
+
+              {evt.rival && (evt.rival.boxrecUrl || evt.rival.videoUrl || evt.rival.instagram) && (
+                <div className="flex flex-wrap gap-1.5 text-[11px] font-semibold">
+                  {evt.rival.boxrecUrl && (
+                    <a href={evt.rival.boxrecUrl} target="_blank" rel="noopener noreferrer" className="px-2 py-1 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 flex items-center gap-1">
+                      <ExternalLink className="w-3 h-3" /> BoxRec
+                    </a>
+                  )}
+                  {evt.rival.videoUrl && (
+                    <a href={evt.rival.videoUrl} target="_blank" rel="noopener noreferrer" className="px-2 py-1 rounded-lg bg-red-950/60 border border-red-900 text-red-200 flex items-center gap-1">
+                      <ExternalLink className="w-3 h-3" /> Video
+                    </a>
+                  )}
+                  {evt.rival.instagram && (
+                    <a href={igLink(evt.rival.instagram)} target="_blank" rel="noopener noreferrer" className="px-2 py-1 rounded-lg bg-fuchsia-950/50 border border-fuchsia-900 text-fuchsia-200 flex items-center gap-1">
+                      <ExternalLink className="w-3 h-3" /> Instagram
+                    </a>
+                  )}
+                </div>
+              )}
+
               {evt.cornerNotes && (
                 <div className="bg-zinc-950 border border-amber-900/40 rounded-xl p-3 text-xs space-y-1">
                   <span className="font-extrabold text-amber-400 uppercase tracking-wider text-[10px] block">
@@ -134,6 +215,8 @@ export const EventsView: React.FC = () => {
           ))}
         </div>
       )}
+
+      {rivalEvent && <RivalModal event={rivalEvent} onClose={() => setRivalEventId(null)} />}
 
       {modalOpen && (
         <EventModal
