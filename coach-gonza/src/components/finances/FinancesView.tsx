@@ -1,3 +1,4 @@
+import { askConfirm } from '../../utils/confirm';
 import React, { useState } from 'react';
 import { waLink, paymentReminderText } from '../../utils/whatsapp';
 import { paymentLabel } from '../../utils/payments';
@@ -121,8 +122,8 @@ export const FinancesView: React.FC = () => {
     openPayPrompt({ incomeId });
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('¿Eliminar este registro de ingreso?')) {
+  const handleDelete = async (id: string) => {
+    if (await askConfirm('¿Eliminar este ingreso?', { okLabel: 'Eliminar' })) {
       deleteIncome(id);
     }
   };
@@ -380,7 +381,7 @@ export const FinancesView: React.FC = () => {
                         <Edit3 className="w-3.5 h-3.5 text-blue-400" />
                       </button>
                       <button
-                        onClick={() => { if (confirm('¿Eliminar este gasto?')) deleteExpense(exp.id); }}
+                        onClick={async () => { if (await askConfirm('¿Eliminar este gasto?', { okLabel: 'Eliminar' })) deleteExpense(exp.id); }}
                         className="p-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-red-300 cursor-pointer"
                         title="Eliminar"
                       >

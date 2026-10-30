@@ -5,6 +5,7 @@ import { BottomNav } from './components/common/BottomNav';
 import { QuickAddModal } from './components/common/QuickAddModal';
 import { Toast } from './components/common/Toast';
 import { PayMethodModal } from './components/common/PayMethodModal';
+import { ConfirmDialog } from './components/common/ConfirmDialog';
 
 import { DashboardView } from './components/dashboard/DashboardView';
 import { CalendarView } from './components/calendar/CalendarView';
@@ -120,6 +121,8 @@ const MainContent: React.FC = () => {
 
       {/* Toast Notification */}
       <PayMethodModal />
+
+      <ConfirmDialog />
 
       <Toast />
     </div>

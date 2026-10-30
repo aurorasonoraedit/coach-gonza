@@ -1,3 +1,4 @@
+import { askConfirm } from '../../utils/confirm';
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Package, Plus, Edit3, Trash2, Check, Sparkles } from 'lucide-react';
@@ -10,8 +11,8 @@ export const PackagesView: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [pkgToEdit, setPkgToEdit] = useState<PackageService | null>(null);
 
-  const handleDelete = (id: string) => {
-    if (confirm('¿Estás seguro de eliminar esta oferta de servicio?')) {
+  const handleDelete = async (id: string) => {
+    if (await askConfirm('¿Eliminar este paquete?', { okLabel: 'Eliminar' })) {
       deletePackage(id);
     }
   };

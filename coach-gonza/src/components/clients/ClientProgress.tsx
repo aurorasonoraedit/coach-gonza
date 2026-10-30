@@ -1,3 +1,4 @@
+import { askConfirm } from '../../utils/confirm';
 import React, { useState } from 'react';
 import { Plus, Scale, Target, Trash2, TrendingDown, TrendingUp, Minus } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, CartesianGrid } from 'recharts';
@@ -236,7 +237,7 @@ export const ClientProgress: React.FC<{ client: Client }> = ({ client: initialCl
                   {e.notes && <p className="text-zinc-300 italic mt-0.5">{e.notes}</p>}
                 </div>
                 <button
-                  onClick={() => confirm('¿Eliminar este registro?') && deleteProgress(e.id)}
+                  onClick={async () => { if (await askConfirm('¿Eliminar este registro?', { okLabel: 'Eliminar' })) deleteProgress(e.id); }}
                   className="p-1.5 rounded-lg bg-zinc-800 text-zinc-500 hover:text-red-300 cursor-pointer shrink-0"
                   title="Eliminar"
                 >

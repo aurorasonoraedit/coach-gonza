@@ -1,3 +1,4 @@
+import { askConfirm } from '../../utils/confirm';
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Swords, Plus, MapPin, Edit3, Trash2, Star, UserSearch, ExternalLink } from 'lucide-react';
@@ -17,8 +18,8 @@ export const EventsView: React.FC = () => {
   const igLink = (v: string) =>
     v.startsWith('http') ? v : `https://instagram.com/${v.replace(/^@/, '')}`;
 
-  const handleDelete = (id: string) => {
-    if (confirm('¿Eliminar este evento o pelea de la agenda?')) {
+  const handleDelete = async (id: string) => {
+    if (await askConfirm('¿Eliminar este evento o pelea de la agenda?', { okLabel: 'Eliminar' })) {
       deleteEvent(id);
     }
   };

@@ -1,3 +1,4 @@
+import { askConfirm } from '../../utils/confirm';
 import React, { useRef, useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Settings, Save, RotateCcw, Download, Upload, Trash2, Moon, Sun } from 'lucide-react';
@@ -79,7 +80,7 @@ export const SettingsView: React.FC = () => {
     if (!file) return;
     try {
       const data = JSON.parse(await file.text());
-      if (!confirm('Esto reemplaza todos los datos actuales por los de la copia. ¿Continuar?')) return;
+      if (!(await askConfirm('Esto reemplaza todos los datos actuales por los de la copia. ¿Continuar?', { okLabel: 'Restaurar' }))) return;
       if (!restoreBackup(data)) showToast('Ese archivo no es una copia válida de BoxCoach');
     } catch {
       showToast('No se pudo leer el archivo');
@@ -322,8 +323,8 @@ export const SettingsView: React.FC = () => {
               Probá la app con datos de ejemplo o borrá todo para empezar de cero. Los paquetes y las rutinas se conservan.
             </p>
             <button
-              onClick={() => {
-                if (confirm('Se reemplazan tus datos por datos de ejemplo. ¿Continuar?')) resetToInitialData();
+              onClick={async () => {
+                if (await askConfirm('Se reemplazan tus datos por datos de ejemplo. ¿Continuar?', { okLabel: 'Cargar ejemplo', danger: false })) resetToInitialData();
               }}
               className="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-200 text-xs font-bold py-2 rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer transition-colors"
             >
@@ -331,8 +332,8 @@ export const SettingsView: React.FC = () => {
               <span>Cargar datos de ejemplo</span>
             </button>
             <button
-              onClick={() => {
-                if (confirm('Se borran clientes, turnos, ingresos, combates y recordatorios. ¿Seguro?')) clearAllData();
+              onClick={async () => {
+                if (await askConfirm('Se borran clientes, turnos, ingresos, gastos, peleas y recordatorios. ¿Seguro?', { okLabel: 'Borrar todo' })) clearAllData();
               }}
               className="w-full bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-bold py-2 rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer transition-colors"
             >

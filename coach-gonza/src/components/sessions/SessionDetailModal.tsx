@@ -1,3 +1,4 @@
+import { askConfirm } from '../../utils/confirm';
 import React, { useState } from 'react';
 import { waBase } from '../../utils/whatsapp';
 import { useApp } from '../../context/AppContext';
@@ -28,8 +29,8 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session,
   const client = clients.find(c => c.id === session.clientId);
   const routine = routines.find(r => r.id === session.routineId);
 
-  const handleDelete = () => {
-    if (confirm(`¿Estás seguro de eliminar la sesión "${session.title}"?`)) {
+  const handleDelete = async () => {
+    if (await askConfirm(`¿Eliminar la sesión "${session.title}"?`, { okLabel: 'Eliminar' })) {
       deleteSession(session.id);
       onClose();
     }

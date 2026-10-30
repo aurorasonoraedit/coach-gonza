@@ -1,3 +1,4 @@
+import { askConfirm } from '../../utils/confirm';
 import React, { useState } from 'react';
 import { X, Save, Search, Youtube, Instagram, Newspaper, Star, Trash2, Lightbulb, ClipboardCheck } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
@@ -124,8 +125,8 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
     onClose();
   };
 
-  const handleDelete = () => {
-    if (confirm('¿Borrar la ficha del rival?')) {
+  const handleDelete = async () => {
+    if (await askConfirm('¿Borrar la ficha del rival?', { okLabel: 'Borrar' })) {
       updateEvent(event.id, { rival: undefined });
       onClose();
     }

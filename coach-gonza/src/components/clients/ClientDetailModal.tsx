@@ -1,3 +1,4 @@
+import { askConfirm } from '../../utils/confirm';
 import React, { useState } from 'react';
 import { waBase, waLink, paymentReminderText } from '../../utils/whatsapp';
 import { ClientProgress } from './ClientProgress';
@@ -38,8 +39,8 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
   const totalDebt = pendingIncomes.reduce((sum, i) => sum + i.amount, 0);
   const fmt = (n: number) => formatCurrency(n, profile.currencySymbol);
 
-  const handleDelete = () => {
-    if (confirm(`¿Estás seguro de eliminar al cliente "${client.name}"? Se mantendrá su historial de cobros.`)) {
+  const handleDelete = async () => {
+    if (await askConfirm(`¿Eliminar a "${client.name}"? Se mantiene su historial de cobros.`, { okLabel: 'Eliminar' })) {
       deleteClient(client.id);
       onClose();
     }

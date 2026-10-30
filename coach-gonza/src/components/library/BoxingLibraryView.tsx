@@ -1,3 +1,4 @@
+import { askConfirm } from '../../utils/confirm';
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { BookOpen, Plus, Dumbbell, Flame, CheckCircle, Edit3, Trash2, Shield, Zap } from 'lucide-react';
@@ -20,8 +21,8 @@ export const BoxingLibraryView: React.FC = () => {
     { num: '6', name: 'Rear Uppercut', desc: 'Gancho ascendente de mano trasera cuando el rival agacha la cabeza', color: 'border-purple-500 text-purple-400' }
   ];
 
-  const handleDelete = (id: string) => {
-    if (confirm('¿Eliminar esta rutina de la biblioteca?')) {
+  const handleDelete = async (id: string) => {
+    if (await askConfirm('¿Eliminar esta rutina de la biblioteca?', { okLabel: 'Eliminar' })) {
       deleteRoutine(id);
     }
   };
