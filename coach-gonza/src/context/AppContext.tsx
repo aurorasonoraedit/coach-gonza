@@ -81,6 +81,10 @@ interface AppContextType {
   quickAddDefaultType: 'session' | 'client' | 'income' | 'event' | null;
   openQuickAdd: (type?: 'session' | 'client' | 'income' | 'event') => void;
   closeQuickAdd: () => void;
+  payPrompt: { sessionId?: string; incomeId?: string } | null;
+  openPayPrompt: (target: { sessionId?: string; incomeId?: string }) => void;
+  closePayPrompt: () => void;
+  confirmPayment: (method: PaymentMethod) => void;
   toastMessage: string | null;
   showToast: (msg: string) => void;
 }
@@ -98,7 +102,11 @@ const load = <T,>(key: string, fallback: T): T => {
 
 // Ingresos: el estado "pagado" es el único válido (versiones viejas guardaban "pagada")
 const normalizeIncomes = (list: Income[]): Income[] =>
-  list.map(i => (i.status === 'pagada' ? { ...i, status: 'pagado' } : i));
+  list.map(i => ({
+    ...i,
+    status: i.status === 'pagada' ? 'pagado' : i.status,
+    paymentMethod: i.paymentMethod === 'bizum_zelle' ? 'mercadopago' : i.paymentMethod
+  }));
 
 // Perfil real con el que arranca la app (sin datos inventados)
 const startProfile: TrainerProfile = {
@@ -155,6 +163,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [quickAddModalOpen, setQuickAddModalOpen] = useState<boolean>(false);
   const [quickAddDefaultType, setQuickAddDefaultType] = useState<'session' | 'client' | 'income' | 'event' | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [payPrompt, setPayPrompt] = useState<{ sessionId?: string; incomeId?: string } | null>(null);
 
   // Sync to localStorage
   useEffect(() => {
@@ -585,6 +594,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return true;
   };
 
+  // "¿Cómo te pagó?": se elige el método antes de registrar el cobro
+  const openPayPrompt = (target: { sessionId?: string; incomeId?: string }) => setPayPrompt(target);
+  const closePayPrompt = () => setPayPrompt(null);
+  const confirmPayment = (method: PaymentMethod) => {
+    if (!payPrompt) return;
+    if (payPrompt.sessionId && sessions.some(s => s.id === payPrompt.sessionId)) {
+      markSessionPaid(payPrompt.sessionId, method);
+    } else if (payPrompt.incomeId) {
+      setIncomes(prev => prev.map(i => (i.id === payPrompt.incomeId ? { ...i, status: 'pagado', paymentMethod: method } : i)));
+      const inc = incomes.find(i => i.id === payPrompt.incomeId);
+      if (inc?.sessionId) {
+        setSessions(prev => prev.map(x => (x.id === inc.sessionId ? { ...x, paymentStatus: 'pagada', paidAmount: x.price } : x)));
+        setReminders(prev => prev.map(r => (r.targetId === inc.sessionId ? { ...r, isCompleted: true } : r)));
+      }
+      showToast('Pago registrado correctamente');
+    }
+    setPayPrompt(null);
+  };
+
   const openQuickAdd = (type?: 'session' | 'client' | 'income' | 'event') => {
     setQuickAddDefaultType(type || 'session');
     setQuickAddModalOpen(true);
@@ -651,6 +679,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         quickAddDefaultType,
         openQuickAdd,
         closeQuickAdd,
+        payPrompt,
+        openPayPrompt,
+        closePayPrompt,
+        confirmPayment,
         toastMessage,
         showToast
       }}

@@ -1,4 +1,5 @@
 import { Session, Client, Income, Expense } from '../types';
+import { paymentLabel } from './payments';
 
 export const exportSessionsToCSV = (sessions: Session[]) => {
   const headers = ['ID', 'Título', 'Tipo', 'Fecha', 'Hora Inicio', 'Hora Fin', 'Cliente', 'Lugar', 'Estado', 'Estado Pago', 'Precio ($)', 'Notas'];
@@ -29,7 +30,7 @@ export const exportIncomesToCSV = (incomes: Income[]) => {
     `"${(inc.clientName || 'N/A').replace(/"/g, '""')}"`,
     `"${inc.concept.replace(/"/g, '""')}"`,
     inc.amount,
-    inc.paymentMethod,
+    paymentLabel(inc.paymentMethod),
     inc.status,
     `"${(inc.notes || '').replace(/"/g, '""')}"`
   ]);

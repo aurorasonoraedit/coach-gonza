@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { waLink, paymentReminderText } from '../../utils/whatsapp';
+import { paymentLabel } from '../../utils/payments';
 import { ExpenseModal, categoryInfo, EXPENSE_CATEGORIES } from './ExpenseModal';
 import { Expense } from '../../types';
 import { exportExpensesToCSV } from '../../utils/exportUtils';
@@ -37,7 +38,7 @@ import { IncomeModal } from './IncomeModal';
 import { exportIncomesToCSV } from '../../utils/exportUtils';
 
 export const FinancesView: React.FC = () => {
-  const { incomes, profile, clients, deleteIncome, updateIncome, expenses, deleteExpense } = useApp();
+  const { incomes, profile, clients, deleteIncome, expenses, deleteExpense, openPayPrompt } = useApp();
 
   const [activeTab, setActiveTab] = useState<'all' | 'pagado' | 'pendiente' | 'gastos'>('all');
   const [modalOpen, setModalOpen] = useState(false);
@@ -106,18 +107,18 @@ export const FinancesView: React.FC = () => {
   const methodMap: { [method: string]: number } = {};
   incomes.forEach(i => {
     if (i.status === 'pagado') {
-      methodMap[i.paymentMethod] = (methodMap[i.paymentMethod] || 0) + i.amount;
+      methodMap[paymentLabel(i.paymentMethod)] = (methodMap[paymentLabel(i.paymentMethod)] || 0) + i.amount;
     }
   });
 
   const pieColors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
   const pieData = Object.keys(methodMap).map(m => ({
-    name: m.replace('_', ' ').toUpperCase(),
+    name: m,
     value: methodMap[m]
   }));
 
   const handleMarkPaid = (incomeId: string) => {
-    updateIncome(incomeId, { status: 'pagado' });
+    openPayPrompt({ incomeId });
   };
 
   const handleDelete = (id: string) => {
@@ -414,7 +415,7 @@ export const FinancesView: React.FC = () => {
                       <div className="flex items-center space-x-2">
                         <h4 className="font-bold text-white text-xs">{inc.concept}</h4>
                         <span className="text-[10px] text-zinc-400 font-semibold bg-zinc-800 px-1.5 py-0.2 rounded uppercase">
-                          {inc.paymentMethod.replace('_', ' ')}
+                          {paymentLabel(inc.paymentMethod)}
                         </span>
                       </div>
                       <p className="text-[11px] text-zinc-400 mt-0.5">

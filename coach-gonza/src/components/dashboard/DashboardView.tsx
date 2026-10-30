@@ -36,6 +36,7 @@ export const DashboardView: React.FC = () => {
     setActiveTab,
     markSessionStatus,
     markSessionPaid,
+    openPayPrompt,
     toggleReminder
   } = useApp();
 
@@ -403,7 +404,7 @@ export const DashboardView: React.FC = () => {
                           )}
                           {session.paymentStatus === 'pendiente' && (
                             <button
-                              onClick={() => markSessionPaid(session.id)}
+                              onClick={() => openPayPrompt({ sessionId: session.id })}
                               className="bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg transition-all cursor-pointer shadow-sm"
                             >
                               Cobrar
@@ -470,9 +471,7 @@ export const DashboardView: React.FC = () => {
                         )}
                         <button
                           onClick={() => {
-                            if (inc.sessionId) {
-                              markSessionPaid(inc.sessionId);
-                            }
+                            openPayPrompt({ sessionId: inc.sessionId, incomeId: inc.id });
                           }}
                           className="bg-green-600 hover:bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded-lg cursor-pointer"
                         >

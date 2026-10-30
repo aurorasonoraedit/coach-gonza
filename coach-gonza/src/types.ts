@@ -14,7 +14,8 @@ export type PaymentStatus = 'pagada' | 'pagado' | 'pendiente' | 'parcial';
 export type ClientLevel = 'principiante' | 'intermedio' | 'avanzado' | 'competidor';
 export type ClientGoal = 'perder_peso' | 'tecnica' | 'competencia' | 'defensa_personal' | 'condicion_fisica';
 
-export type PaymentMethod = 'efectivo' | 'transferencia' | 'tarjeta' | 'bizum_zelle' | 'otro';
+// 'tarjeta', 'bizum_zelle' y 'otro' quedan solo por compatibilidad con datos viejos
+export type PaymentMethod = 'efectivo' | 'transferencia' | 'mercadopago' | 'tarjeta' | 'bizum_zelle' | 'otro';
 
 export type EventType = 'pelea' | 'competencia' | 'seminario' | 'examen' | 'campamento' | 'personal';
 

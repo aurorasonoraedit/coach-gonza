@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PAYMENT_METHODS } from '../../utils/payments';
 import { useApp } from '../../context/AppContext';
 import { Income, PaymentMethod, PaymentStatus } from '../../types';
 import { X } from 'lucide-react';
@@ -154,11 +155,12 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ incomeToEdit, onClose 
                 onChange={e => setPaymentMethod(e.target.value as PaymentMethod)}
                 className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
               >
-                <option value="efectivo">💵 Efectivo</option>
-                <option value="transferencia">🏦 Transferencia Bancaria</option>
-                <option value="bizum_zelle">📱 Bizum / Zelle / MercadoPago</option>
-                <option value="tarjeta">💳 Tarjeta Crédito/Débito</option>
-                <option value="otro">🔄 Otro</option>
+                {PAYMENT_METHODS.map(m => (
+                    <option key={m.id} value={m.id}>{m.emoji} {m.label}</option>
+                  ))}
+                {!PAYMENT_METHODS.some(m => m.id === paymentMethod) && (
+                  <option value={paymentMethod}>{paymentMethod}</option>
+                )}
               </select>
             </div>
 

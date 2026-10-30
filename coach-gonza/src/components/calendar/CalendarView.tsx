@@ -35,7 +35,8 @@ export const CalendarView: React.FC = () => {
     addSession,
     duplicateSession,
     markSessionStatus,
-    markSessionPaid
+    markSessionPaid,
+    openPayPrompt
   } = useApp();
 
   const [viewMode, setViewMode] = useState<'month' | 'week' | 'day'>('month');
@@ -437,7 +438,7 @@ export const CalendarView: React.FC = () => {
                           )}
                           {sess.paymentStatus === 'pendiente' && (
                             <button
-                              onClick={() => markSessionPaid(sess.id)}
+                              onClick={() => openPayPrompt({ sessionId: sess.id })}
                               className="bg-amber-600 hover:bg-amber-500 text-white font-bold px-2 py-0.5 rounded text-[10px] cursor-pointer"
                             >
                               Cobrar

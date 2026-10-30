@@ -18,6 +18,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session,
     routines,
     markSessionStatus,
     markSessionPaid,
+    openPayPrompt,
     deleteSession,
     duplicateSession
   } = useApp();
@@ -196,7 +197,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session,
               {session.paymentStatus === 'pendiente' && (
                 <button
                   onClick={() => {
-                    markSessionPaid(session.id);
+                    openPayPrompt({ sessionId: session.id });
                     onClose();
                   }}
                   className="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold py-2 rounded-xl transition-all cursor-pointer shadow"

@@ -4,6 +4,7 @@ import { Header } from './components/common/Header';
 import { BottomNav } from './components/common/BottomNav';
 import { QuickAddModal } from './components/common/QuickAddModal';
 import { Toast } from './components/common/Toast';
+import { PayMethodModal } from './components/common/PayMethodModal';
 
 import { DashboardView } from './components/dashboard/DashboardView';
 import { CalendarView } from './components/calendar/CalendarView';
@@ -118,6 +119,8 @@ const MainContent: React.FC = () => {
       <QuickAddModal />
 
       {/* Toast Notification */}
+      <PayMethodModal />
+
       <Toast />
     </div>
   );

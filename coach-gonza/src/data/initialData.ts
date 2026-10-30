@@ -23,7 +23,7 @@ export const initialTrainerProfile: TrainerProfile = {
   defaultSessionDurationMinutes: 60,
   workStartTime: "08:00",
   workEndTime: "21:30",
-  acceptedPaymentMethods: ["efectivo", "transferencia", "tarjeta", "otro"]
+  acceptedPaymentMethods: ["efectivo", "transferencia", "mercadopago"]
 };
 
 export const initialPackages: PackageService[] = [
@@ -276,7 +276,7 @@ export const initialIncomes: Income[] = [
     clientName: "Valentina 'Valu' Benítez",
     concept: "Sesión Personalizada (Bono 8)",
     amount: 3000,
-    paymentMethod: "transferencia",
+    paymentMethod: "mercadopago",
     status: "pagado",
     sessionId: "s-2",
     notes: "Transferencia bancaria al alias del club"
@@ -311,7 +311,7 @@ export const initialIncomes: Income[] = [
     clientName: "Valentina 'Valu' Benítez",
     concept: "Bono 8 Sesiones Sparring & Técnica",
     amount: 24000,
-    paymentMethod: "tarjeta",
+    paymentMethod: "mercadopago",
     status: "pagado",
     packageId: "pkg-2"
   },

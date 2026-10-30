@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { waBase, waLink, paymentReminderText } from '../../utils/whatsapp';
 import { ClientProgress } from './ClientProgress';
+import { paymentLabel } from '../../utils/payments';
 import { useApp } from '../../context/AppContext';
 import { Client } from '../../types';
 import { X, Phone, MessageCircle, Mail, Trophy, Target, Calendar, DollarSign, Edit3, Trash2, Dumbbell, Package } from 'lucide-react';
@@ -291,7 +292,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
                   <div key={inc.id} className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs flex justify-between items-center">
                     <div>
                       <p className="font-bold text-white">{inc.concept}</p>
-                      <p className="text-[11px] text-zinc-400">{formatShortDate(inc.date)} • {inc.paymentMethod}</p>
+                      <p className="text-[11px] text-zinc-400">{formatShortDate(inc.date)} • {paymentLabel(inc.paymentMethod)}</p>
                     </div>
                     <span className="font-extrabold text-green-400 text-sm">
                       {formatCurrency(inc.amount, profile.currencySymbol)}
