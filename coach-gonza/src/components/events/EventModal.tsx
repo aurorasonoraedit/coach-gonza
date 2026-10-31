@@ -10,7 +10,7 @@ interface EventModalProps {
 }
 
 export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) => {
-  const { addEvent, updateEvent } = useApp();
+  const { addEvent, updateEvent, clients } = useApp();
 
   const [title, setTitle] = useState(eventToEdit ? eventToEdit.title : '');
   const [type, setType] = useState<EventType>(eventToEdit ? eventToEdit.type : 'pelea');
@@ -18,6 +18,7 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
   const [time, setTime] = useState(eventToEdit ? eventToEdit.time : '18:00');
   const [location, setLocation] = useState(eventToEdit ? eventToEdit.location : '');
   const [participantOrClient, setParticipantOrClient] = useState(eventToEdit ? (eventToEdit.participantOrClient || '') : '');
+  const [boxerId, setBoxerId] = useState(eventToEdit?.boxerId ?? '');
   const [notes, setNotes] = useState(eventToEdit ? (eventToEdit.notes || '') : '');
   const [cornerNotes, setCornerNotes] = useState(eventToEdit ? (eventToEdit.cornerNotes || '') : '');
   const [isImportant, setIsImportant] = useState<boolean>(eventToEdit ? (eventToEdit.isImportant ?? true) : true);
@@ -34,6 +35,7 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
         time,
         location,
         participantOrClient,
+        boxerId: boxerId || undefined,
         notes,
         cornerNotes,
         isImportant
@@ -46,6 +48,7 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
         time,
         location,
         participantOrClient,
+        boxerId: boxerId || undefined,
         notes,
         cornerNotes,
         isImportant
@@ -66,7 +69,7 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -83,7 +86,7 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
               placeholder="Ej. Torneo Guantes de Oro / Pelea de Carlos"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-ring-red"
             />
           </div>
 
@@ -93,7 +96,7 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
               <select
                 value={type}
                 onChange={e => setType(e.target.value as EventType)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
                 <option value="pelea">🥊 Pelea / Combate Ring</option>
                 <option value="competencia">🏆 Torneo / Competencia</option>
@@ -105,15 +108,33 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-300 mb-1">Participante / Cliente</label>
-              <input
-                type="text"
-                placeholder="Ej. Carlos Mendoza Vs. Rival"
-                value={participantOrClient}
-                onChange={e => setParticipantOrClient(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
-              />
+              <label className="block text-xs font-semibold text-zinc-300 mb-1">Tu boxeador</label>
+              <select
+                value={boxerId}
+                onChange={e => {
+                  setBoxerId(e.target.value);
+                  const c = clients.find(x => x.id === e.target.value);
+                  if (c && !participantOrClient) setParticipantOrClient(c.name);
+                }}
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
+              >
+                <option value="">Ninguno / otro</option>
+                {clients.map(c => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
             </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-zinc-300 mb-1">Participantes (texto libre)</label>
+            <input
+              type="text"
+              placeholder="Ej. Mateo Rossi vs. J. Ramírez"
+              value={participantOrClient}
+              onChange={e => setParticipantOrClient(e.target.value)}
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
+            />
           </div>
 
           <div className="grid grid-cols-3 gap-3">
@@ -124,7 +145,7 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
                 required
                 value={date}
                 onChange={e => setDate(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
 
@@ -135,7 +156,7 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
                 required
                 value={time}
                 onChange={e => setTime(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
 
@@ -160,7 +181,7 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
               placeholder="Arena Metropolitana / Gym"
               value={location}
               onChange={e => setLocation(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             />
           </div>
 
@@ -171,7 +192,7 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
               placeholder="Estrategia contra el rival, pesaje máximo..."
               value={cornerNotes}
               onChange={e => setCornerNotes(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             ></textarea>
           </div>
 
@@ -182,13 +203,13 @@ export const EventModal: React.FC<EventModalProps> = ({ eventToEdit, onClose }) 
               placeholder="Observaciones adicionales..."
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             ></textarea>
           </div>
 
           <button
             type="submit"
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-red-500/40"
+            className="w-full py-2.5 min-h-11 rounded-xl bg-zinc-900 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-ring-red/40"
           >
             {eventToEdit ? 'Guardar Cambios' : 'Agendar Evento'}
           </button>

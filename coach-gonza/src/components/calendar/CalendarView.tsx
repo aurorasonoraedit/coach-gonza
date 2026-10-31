@@ -118,21 +118,20 @@ export const CalendarView: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-24 pt-2 px-4 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto">
       
       {/* Top Header & View Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-lg">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
           <div className="flex items-center space-x-2">
-            <h1 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
-              <CalendarIcon className="w-5 h-5 text-red-500" /> Agenda de Trabajo
+            <h1 className="font-display font-extrabold uppercase text-3xl tracking-tight leading-none">Agenda
             </h1>
             <span className="text-xs text-zinc-400 font-bold bg-zinc-800 px-2 py-0.5 rounded">
               {monthNames[currentMonthIndex]} {currentYear}
             </span>
           </div>
-          <p className="text-xs text-zinc-400 mt-0.5">
-            Organiza tus turnos, bloquea horarios y revisa choques de tiempo.
+          <p className="text-sm text-zinc-400 mt-1.5">
+            Tus turnos por mes, semana o día.
           </p>
         </div>
 
@@ -154,24 +153,24 @@ export const CalendarView: React.FC = () => {
           <div className="bg-zinc-950 border border-zinc-800 p-1 rounded-xl flex text-xs font-bold">
             <button
               onClick={() => setViewMode('month')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                viewMode === 'month' ? 'bg-red-600 text-white shadow' : 'text-zinc-400 hover:text-zinc-200'
+              className={`px-3 py-2 min-h-11 rounded-lg transition-all cursor-pointer ${
+                viewMode === 'month' ? 'bg-ring-red text-white shadow' : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               Mes
             </button>
             <button
               onClick={() => setViewMode('week')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                viewMode === 'week' ? 'bg-red-600 text-white shadow' : 'text-zinc-400 hover:text-zinc-200'
+              className={`px-3 py-2 min-h-11 rounded-lg transition-all cursor-pointer ${
+                viewMode === 'week' ? 'bg-ring-red text-white shadow' : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               Semana
             </button>
             <button
               onClick={() => setViewMode('day')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                viewMode === 'day' ? 'bg-red-600 text-white shadow' : 'text-zinc-400 hover:text-zinc-200'
+              className={`px-3 py-2 min-h-11 rounded-lg transition-all cursor-pointer ${
+                viewMode === 'day' ? 'bg-ring-red text-white shadow' : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
               Día
@@ -180,7 +179,7 @@ export const CalendarView: React.FC = () => {
 
           <button
             onClick={() => setSessionModalOpen(true)}
-            className="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center space-x-1 shadow-lg transition-all cursor-pointer border border-red-500/40"
+            className="bg-ring-red hover:bg-ring-red-deep text-white text-xs font-bold px-3 py-2 rounded-xl flex items-center space-x-1 transition-all cursor-pointer border border-ring-red/40"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">Nuevo Turno</span>
@@ -243,13 +242,13 @@ export const CalendarView: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
           {/* Calendar Grid (2 Cols) */}
-          <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-xl">
+          <div className="lg:col-span-2 sm:bg-zinc-900 sm:border sm:border-zinc-800 sm:rounded-2xl sm:p-4">
             
             {/* Month Navigation Controls */}
             <div className="flex items-center justify-between mb-4">
               <button
                 onClick={handlePrevMonth}
-                className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors cursor-pointer border border-zinc-700/50"
+                className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors cursor-pointer border border-zinc-700/50"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -260,14 +259,14 @@ export const CalendarView: React.FC = () => {
 
               <button
                 onClick={handleNextMonth}
-                className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors cursor-pointer border border-zinc-700/50"
+                className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors cursor-pointer border border-zinc-700/50"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
 
             {/* Days of Week Header */}
-            <div className="grid grid-cols-7 gap-1 text-center text-[11px] font-bold text-zinc-400 uppercase tracking-wider mb-2">
+            <div className="grid grid-cols-7 gap-1 text-center text-[12.5px] font-bold text-zinc-400 uppercase tracking-wider mb-2">
               <span>Lun</span>
               <span>Mar</span>
               <span>Mié</span>
@@ -294,7 +293,7 @@ export const CalendarView: React.FC = () => {
                     onClick={() => setSelectedDateStr(cell.dateStr)}
                     className={`h-16 sm:h-20 rounded-xl p-1.5 flex flex-col justify-between text-left transition-all border cursor-pointer relative ${
                       isSelected
-                        ? 'bg-red-950/70 border-red-500 shadow-md ring-1 ring-red-500'
+                        ? 'bg-red-950/70 border-ring-red ring-1 ring-red-500'
                         : isToday
                         ? 'bg-zinc-800/90 border-red-600/60'
                         : cell.isCurrentMonth
@@ -306,7 +305,7 @@ export const CalendarView: React.FC = () => {
                       <span
                         className={`text-xs font-black ${
                           isToday
-                            ? 'w-5 h-5 rounded-full bg-red-600 text-white flex items-center justify-center text-[10px]'
+                            ? 'w-5 h-5 rounded-full bg-ring-red text-white flex items-center justify-center text-xs'
                             : cell.isCurrentMonth
                             ? 'text-white'
                             : 'text-zinc-600'
@@ -315,14 +314,14 @@ export const CalendarView: React.FC = () => {
                         {cell.dayNumber}
                       </span>
                       {hasConflict && (
-                        <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" title="Solapamiento de horario"></span>
+                        <span className="w-2 h-2 rounded-full bg-amber-500" title="Solapamiento de horario"></span>
                       )}
                     </div>
 
                     {/* Session Indicators */}
                     {daySessList.length > 0 && (
                       <div className="space-y-0.5 mt-1">
-                        <div className="text-[10px] font-bold px-1 py-0.2 rounded bg-red-950 text-red-300 border border-red-800/60 truncate">
+                        <div className="text-xs font-bold px-1 py-0.2 rounded bg-red-950 text-red-300 border border-red-800/60 truncate">
                           {daySessList.length} sesión(es)
                         </div>
                       </div>
@@ -336,26 +335,26 @@ export const CalendarView: React.FC = () => {
           {/* Day Detail & Action Column (1 Col) */}
           <div className="space-y-4">
             
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3 shadow-xl">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
               <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                 <div>
                   <h3 className="text-sm font-extrabold text-white">
                     {formatDateSpanish(selectedDateStr)}
                   </h3>
-                  <p className="text-[11px] text-zinc-400">{daySessions.length} turnos agendados</p>
+                  <p className="text-[12.5px] text-zinc-400">{daySessions.length} turnos agendados</p>
                 </div>
 
                 <div className="flex items-center space-x-1">
                   <button
                     onClick={handleBlockSlot}
-                    className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors cursor-pointer border border-zinc-700"
+                    className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors cursor-pointer border border-zinc-700"
                     title="Bloquear Horario"
                   >
                     <Lock className="w-3.5 h-3.5 text-amber-400" />
                   </button>
                   <button
                     onClick={() => setSessionModalOpen(true)}
-                    className="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer"
+                    className="bg-ring-red hover:bg-ring-red-deep text-white text-xs font-bold px-2.5 py-1.5 rounded-lg cursor-pointer"
                   >
                     + Agregar
                   </button>
@@ -393,15 +392,15 @@ export const CalendarView: React.FC = () => {
                         <div>
                           <div className="flex items-center space-x-2">
                             <span className="text-xs font-black text-red-400">{sess.startTime} - {sess.endTime}</span>
-                            <span className="text-[10px] font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 px-1.5 py-0.2 rounded">
+                            <span className="text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 px-1.5 py-0.2 rounded">
                               {sess.sessionType.replace('_', ' ')}
                             </span>
                           </div>
                           <h4 className="font-bold text-white text-xs mt-1 leading-snug">{sess.title}</h4>
-                          <p className="text-[11px] text-zinc-400 mt-0.5">{sess.clientName || 'Cliente'} • {sess.location}</p>
+                          <p className="text-[12.5px] text-zinc-400 mt-0.5">{sess.clientName || 'Cliente'} • {sess.location}</p>
                         </div>
                         <span
-                          className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${
+                          className={`text-xs font-bold uppercase px-2 py-0.5 rounded border ${
                             sess.paymentStatus === 'pagada'
                               ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
                               : 'bg-amber-950 text-amber-400 border-amber-800'
@@ -412,7 +411,7 @@ export const CalendarView: React.FC = () => {
                       </div>
 
                       {/* Action buttons */}
-                      <div className="flex items-center justify-between border-t border-zinc-900 pt-2 text-[11px]">
+                      <div className="flex items-center justify-between border-t border-zinc-900 pt-2 text-[12.5px]">
                         <button
                           onClick={() => setSelectedSession(sess)}
                           className="text-zinc-400 hover:text-white font-medium underline cursor-pointer"
@@ -431,7 +430,7 @@ export const CalendarView: React.FC = () => {
                           {sess.status !== 'completada' && (
                             <button
                               onClick={() => markSessionStatus(sess.id, 'completada')}
-                              className="bg-green-600 hover:bg-green-500 text-white font-bold px-2 py-0.5 rounded text-[10px] cursor-pointer"
+                              className="bg-green-600 hover:bg-green-500 text-white font-bold px-2 py-0.5 rounded text-xs cursor-pointer"
                             >
                               ✓ Listo
                             </button>
@@ -439,7 +438,7 @@ export const CalendarView: React.FC = () => {
                           {sess.paymentStatus === 'pendiente' && (
                             <button
                               onClick={() => openPayPrompt({ sessionId: sess.id })}
-                              className="bg-amber-600 hover:bg-amber-500 text-white font-bold px-2 py-0.5 rounded text-[10px] cursor-pointer"
+                              className="bg-amber-600 hover:bg-amber-500 text-white font-bold px-2 py-0.5 rounded text-xs cursor-pointer"
                             >
                               Cobrar
                             </button>
@@ -459,7 +458,7 @@ export const CalendarView: React.FC = () => {
 
       {/* 2. WEEK VIEW */}
       {viewMode === 'week' && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-xl space-y-4">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
           <h2 className="text-sm font-bold text-white">Vista Semanal de Turnos</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-7 gap-3">
@@ -479,23 +478,23 @@ export const CalendarView: React.FC = () => {
                 >
                   <div className="border-b border-zinc-800 pb-1.5 flex items-center justify-between">
                     <div>
-                      <span className="block text-[11px] font-bold text-red-400 uppercase">{dayName}</span>
+                      <span className="block text-[12.5px] font-bold text-red-400 uppercase">{dayName}</span>
                       <span className="text-xs font-black text-white">{formatShortDate(dateStr)}</span>
                     </div>
-                    <span className="text-[10px] text-zinc-500 bg-zinc-900 px-1.5 py-0.5 rounded font-bold">
+                    <span className="text-xs text-zinc-500 bg-zinc-900 px-1.5 py-0.5 rounded font-bold">
                       {daysess.length}
                     </span>
                   </div>
 
                   {daysess.length === 0 ? (
-                    <p className="text-[10px] text-zinc-600 italic py-4 text-center">Sin turnos</p>
+                    <p className="text-xs text-zinc-600 italic py-4 text-center">Sin turnos</p>
                   ) : (
                     <div className="space-y-1.5">
                       {daysess.map(s => (
                         <div
                           key={s.id}
                           onClick={() => setSelectedSession(s)}
-                          className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/60 rounded p-1.5 text-[11px] cursor-pointer transition-colors"
+                          className="bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/60 rounded p-1.5 text-[12.5px] cursor-pointer transition-colors"
                         >
                           <span className="font-extrabold text-red-400 block">{s.startTime}</span>
                           <span className="font-semibold text-white truncate block">{s.clientName || s.title}</span>
@@ -512,7 +511,7 @@ export const CalendarView: React.FC = () => {
 
       {/* 3. DAY VIEW */}
       {viewMode === 'day' && (
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl space-y-4">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
           <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
             <div>
               <h2 className="text-base font-extrabold text-white">{formatDateSpanish(selectedDateStr)}</h2>
@@ -520,7 +519,7 @@ export const CalendarView: React.FC = () => {
             </div>
             <button
               onClick={() => setSessionModalOpen(true)}
-              className="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl cursor-pointer"
+              className="bg-ring-red hover:bg-ring-red-deep text-white text-xs font-bold px-3 py-2 min-h-11 rounded-xl cursor-pointer"
             >
               + Agregar Turno
             </button>
@@ -535,7 +534,7 @@ export const CalendarView: React.FC = () => {
                   <span className="text-xs font-mono font-bold text-zinc-400 w-12 shrink-0">{hour}</span>
                   <div className="flex-1 space-y-1">
                     {matchedSess.length === 0 ? (
-                      <div className="h-7 border border-dashed border-zinc-800 rounded-lg flex items-center px-3 text-[11px] text-zinc-600">
+                      <div className="h-7 border border-dashed border-zinc-800 rounded-lg flex items-center px-3 text-[12.5px] text-zinc-600">
                         Horario Libre
                       </div>
                     ) : (
@@ -543,11 +542,11 @@ export const CalendarView: React.FC = () => {
                         <div
                           key={s.id}
                           onClick={() => setSelectedSession(s)}
-                          className="bg-zinc-950 border border-zinc-700 rounded-xl p-2.5 flex items-center justify-between cursor-pointer hover:border-red-500 transition-all"
+                          className="bg-zinc-950 border border-zinc-700 rounded-xl p-2.5 flex items-center justify-between cursor-pointer hover:border-ring-red transition-all"
                         >
                           <div>
                             <span className="font-bold text-white text-xs">{s.title}</span>
-                            <span className="text-[11px] text-zinc-400 ml-2">({s.startTime} - {s.endTime})</span>
+                            <span className="text-[12.5px] text-zinc-400 ml-2">({s.startTime} - {s.endTime})</span>
                           </div>
                           <span className="text-xs font-extrabold text-amber-400">{formatCurrency(s.price, profile.currencySymbol)}</span>
                         </div>

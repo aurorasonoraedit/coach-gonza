@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { X, Save } from 'lucide-react';
+import { X, Save, Building2, Package, Car, FileText, Megaphone, Lightbulb, Box, LucideIcon } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Expense, ExpenseCategory } from '../../types';
 import { getTodayString } from '../../utils/dateUtils';
 
-export const EXPENSE_CATEGORIES: { id: ExpenseCategory; label: string; emoji: string }[] = [
-  { id: 'alquiler', label: 'Alquiler / Gimnasio', emoji: '🏠' },
-  { id: 'equipamiento', label: 'Equipamiento', emoji: '🥊' },
-  { id: 'transporte', label: 'Transporte / Viajes', emoji: '🚗' },
-  { id: 'federacion', label: 'Federación / Inscripciones', emoji: '📝' },
-  { id: 'publicidad', label: 'Publicidad / Redes', emoji: '📣' },
-  { id: 'servicios', label: 'Servicios (luz, internet…)', emoji: '💡' },
-  { id: 'otro', label: 'Otro', emoji: '📦' }
+export const EXPENSE_CATEGORIES: { id: ExpenseCategory; label: string; emoji: string; icon: LucideIcon }[] = [
+  { id: 'alquiler', label: 'Alquiler / Gimnasio', emoji: '🏠', icon: Building2 },
+  { id: 'equipamiento', label: 'Equipamiento', emoji: '🥊', icon: Package },
+  { id: 'transporte', label: 'Transporte / Viajes', emoji: '🚗', icon: Car },
+  { id: 'federacion', label: 'Federación / Inscripciones', emoji: '📝', icon: FileText },
+  { id: 'publicidad', label: 'Publicidad / Redes', emoji: '📣', icon: Megaphone },
+  { id: 'servicios', label: 'Servicios (luz, internet…)', emoji: '💡', icon: Lightbulb },
+  { id: 'otro', label: 'Otro', emoji: '📦', icon: Box }
 ];
 
 export const categoryInfo = (id: ExpenseCategory) =>
@@ -23,7 +23,7 @@ interface Props {
 }
 
 const inputCls =
-  'w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500';
+  'w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red';
 
 export const ExpenseModal: React.FC<Props> = ({ expenseToEdit, onClose }) => {
   const { addExpense, updateExpense, profile } = useApp();
@@ -57,7 +57,7 @@ export const ExpenseModal: React.FC<Props> = ({ expenseToEdit, onClose }) => {
           <button
             onClick={onClose}
             aria-label="Cerrar"
-            className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -72,13 +72,13 @@ export const ExpenseModal: React.FC<Props> = ({ expenseToEdit, onClose }) => {
                   type="button"
                   key={c.id}
                   onClick={() => setCategory(c.id)}
-                  className={`text-left text-[11px] font-semibold px-2.5 py-2 rounded-lg border transition-all cursor-pointer ${
+                  className={`text-left text-[12.5px] font-semibold px-2.5 py-2 rounded-lg border transition-all cursor-pointer ${
                     category === c.id
                       ? 'bg-red-950/70 border-red-600 text-white'
                       : 'bg-zinc-800/60 border-zinc-700 text-zinc-300 hover:text-white'
                   }`}
                 >
-                  <span className="mr-1">{c.emoji}</span>
+                  <c.icon className="w-4 h-4 inline-block mr-1.5 -mt-0.5 text-zinc-400" />
                   {c.label}
                 </button>
               ))}
@@ -122,7 +122,7 @@ export const ExpenseModal: React.FC<Props> = ({ expenseToEdit, onClose }) => {
 
           <button
             type="submit"
-            className="w-full bg-red-600 hover:bg-red-500 text-white font-bold text-sm py-2.5 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
+            className="w-full bg-ring-red hover:bg-ring-red-deep text-white font-bold text-sm py-2.5 min-h-11 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <Save className="w-4 h-4" /> {expenseToEdit ? 'Guardar cambios' : 'Registrar gasto'}
           </button>

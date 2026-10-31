@@ -106,7 +106,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -134,7 +134,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
               placeholder="Ej. Sparring & Manoplas Pro"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-ring-red"
             />
           </div>
 
@@ -144,7 +144,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
               <select
                 value={sessionType}
                 onChange={e => setSessionType(e.target.value as SessionType)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
                 <option value="boxeo">🥊 Boxeo General</option>
                 <option value="personalizado">👤 Personalizado 1-a-1</option>
@@ -162,7 +162,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
               <select
                 value={clientId}
                 onChange={e => handleClientChange(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
                 <option value="">-- Sin Cliente Asignado --</option>
                 {clients.map(c => (
@@ -182,7 +182,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
                 required
                 value={date}
                 onChange={e => setDate(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
             <div>
@@ -192,7 +192,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
                 required
                 value={startTime}
                 onChange={e => setStartTime(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
             <div>
@@ -202,7 +202,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
                 required
                 value={endTime}
                 onChange={e => setEndTime(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-2.5 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
           </div>
@@ -215,7 +215,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
                 placeholder="Gimnasio / Ring 1 / Parque"
                 value={location}
                 onChange={e => setLocation(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
 
@@ -226,7 +226,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
                 min="0"
                 value={price}
                 onChange={e => setPrice(Number(e.target.value))}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
           </div>
@@ -237,7 +237,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
               <select
                 value={status}
                 onChange={e => setStatus(e.target.value as SessionStatus)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
                 <option value="programada">📅 Programada</option>
                 <option value="completada">✓ Completada</option>
@@ -250,7 +250,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
               <select
                 value={paymentStatus}
                 onChange={e => setPaymentStatus(e.target.value as PaymentStatus)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
                 <option value="pagada">✓ Pagada</option>
                 <option value="pendiente">⏳ Pendiente</option>
@@ -263,7 +263,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
             <select
               value={routineId}
               onChange={e => setRoutineId(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             >
               <option value="">-- Ninguna rutina vinculada --</option>
               {routines.map(r => (
@@ -279,7 +279,7 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
             <select
               value={reminderMinutesBefore}
               onChange={e => setReminderMinutesBefore(Number(e.target.value))}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             >
               <option value={0}>Al momento</option>
               <option value={15}>15 minutos antes</option>
@@ -296,13 +296,13 @@ export const SessionModal: React.FC<SessionModalProps> = ({ sessionToEdit, onClo
               placeholder="Notas de preparación..."
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             ></textarea>
           </div>
 
           <button
             type="submit"
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-red-500/40"
+            className="w-full py-2.5 min-h-11 rounded-xl bg-zinc-900 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-ring-red/40"
           >
             {sessionToEdit ? 'Guardar Cambios' : 'Agendar Sesión'}
           </button>

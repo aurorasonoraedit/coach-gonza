@@ -17,12 +17,12 @@ export const NewsCard: React.FC<{ item: NewsItem; compact?: boolean }> = ({ item
     rel="noopener noreferrer"
     className={`block bg-zinc-900 border border-zinc-800 hover:border-red-800/70 active:scale-[0.99] rounded-2xl ${compact ? 'p-3' : 'p-4'} transition-all`}
   >
-    <div className="flex items-center gap-2 text-[11px] font-semibold text-zinc-400">
+    <div className="flex items-center gap-2 text-[12.5px] font-semibold text-zinc-400">
       <span className="text-red-400 truncate max-w-[60%]">{item.source}</span>
       <span className="text-zinc-600">•</span>
       <span className="shrink-0">{timeAgo(item.date)}</span>
       {item.tag === 'argentina' && (
-        <span className="ml-auto shrink-0 text-[10px] uppercase tracking-wider bg-sky-950/70 text-sky-300 border border-sky-800/60 px-1.5 py-0.5 rounded">
+        <span className="ml-auto shrink-0 text-xs uppercase tracking-wider bg-sky-950/70 text-sky-300 border border-sky-800/60 px-1.5 py-0.5 rounded">
           ARG
         </span>
       )}
@@ -41,13 +41,12 @@ export const NewsView: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-lg">
+      <div className="">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="text-base font-black text-white tracking-tight flex items-center gap-2">
-              <Newspaper className="w-5 h-5 text-red-500" /> Noticias del Box
+            <h2 className="font-display font-extrabold uppercase text-3xl tracking-tight leading-none">Noticias del Box
             </h2>
-            <p className="text-xs text-zinc-400 mt-0.5">
+            <p className="text-sm text-zinc-400 mt-1.5">
               Lo último del boxeo en castellano, de medios argentinos y del mundo.
             </p>
           </div>
@@ -66,9 +65,9 @@ export const NewsView: React.FC = () => {
             <button
               key={f.id}
               onClick={() => setFilter(f.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap border transition-all cursor-pointer ${
+              className={`px-3 py-2 min-h-11 rounded-xl text-xs font-bold whitespace-nowrap border transition-all cursor-pointer ${
                 filter === f.id
-                  ? 'bg-red-600 border-red-500 text-white'
+                  ? 'bg-ring-red border-ring-red text-white'
                   : 'bg-zinc-800/70 border-zinc-700 text-zinc-300 hover:text-white'
               }`}
             >
@@ -78,7 +77,7 @@ export const NewsView: React.FC = () => {
         </div>
 
         {updatedAt && (
-          <p className="text-[10px] text-zinc-500 mt-3">Actualizado {timeAgo(updatedAt)} · se renueva solo cada 3 horas</p>
+          <p className="text-xs text-zinc-500 mt-3">Actualizado {timeAgo(updatedAt)} · se renueva solo cada 3 horas</p>
         )}
       </div>
 
@@ -109,7 +108,7 @@ export const NewsView: React.FC = () => {
       </div>
 
       {visible.length > 0 && (
-        <p className="text-[10px] text-zinc-500 text-center flex items-center justify-center gap-1">
+        <p className="text-xs text-zinc-500 text-center flex items-center justify-center gap-1">
           <ExternalLink className="w-3 h-3" /> Tocá una noticia para leerla en el medio original. Fuente: Google Noticias.
         </p>
       )}

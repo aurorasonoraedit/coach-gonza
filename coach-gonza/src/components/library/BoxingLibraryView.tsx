@@ -14,7 +14,7 @@ export const BoxingLibraryView: React.FC = () => {
   // Standard Boxing Punch Numbering Cheatsheet
   const punchGuide = [
     { num: '1', name: 'Jab', desc: 'Golpe directo de mano delantera (medir distancia y preparar ataque)', color: 'border-blue-500 text-blue-400' },
-    { num: '2', name: 'Cross / Directo', desc: 'Directo de mano trasera con rotación de cadera (potencia pura)', color: 'border-red-500 text-red-400' },
+    { num: '2', name: 'Cross / Directo', desc: 'Directo de mano trasera con rotación de cadera (potencia pura)', color: 'border-ring-red text-red-400' },
     { num: '3', name: 'Lead Hook / Crochet Izq', desc: 'Gancho lateral de mano delantera a la mandíbula o hígado', color: 'border-amber-500 text-amber-400' },
     { num: '4', name: 'Rear Hook / Crochet Dcho', desc: 'Gancho lateral de mano trasera para cerrar espacio', color: 'border-orange-500 text-orange-400' },
     { num: '5', name: 'Lead Uppercut', desc: 'Gancho ascendente de mano delantera al mentón o plexo', color: 'border-emerald-500 text-emerald-400' },
@@ -31,12 +31,11 @@ export const BoxingLibraryView: React.FC = () => {
     <div className="space-y-6">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-lg">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
-          <h2 className="text-base font-black text-white tracking-tight flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-red-500" /> Biblioteca del Coach & Combos
+          <h2 className="font-display font-extrabold uppercase text-3xl tracking-tight leading-none">Biblioteca del Coach & Combos
           </h2>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-sm text-zinc-400 mt-1.5">
             Nomenclatura estándar de golpes, driles de saco y rutinas de entrenamiento.
           </p>
         </div>
@@ -46,15 +45,15 @@ export const BoxingLibraryView: React.FC = () => {
             setRoutineToEdit(null);
             setModalOpen(true);
           }}
-          className="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-3.5 py-2.5 rounded-xl flex items-center space-x-1.5 shadow-lg transition-all cursor-pointer border border-red-500/40"
+          className="bg-ring-red hover:bg-ring-red-deep text-white text-xs font-bold px-3.5 py-2.5 min-h-11 rounded-xl flex items-center space-x-1.5 transition-all cursor-pointer border border-ring-red/40"
         >
           <Plus className="w-4 h-4" />
-          <span>+ Nueva Rutina</span>
+          <span>Nueva Rutina</span>
         </button>
       </div>
 
       {/* 1. Cheatsheet: Standard Boxing Numbering (1-6) */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl space-y-4">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
         <h3 className="text-sm font-extrabold text-white flex items-center gap-2">
           <Zap className="w-4 h-4 text-amber-400" /> Nomenclatura Numérica Internacional de Boxeo (1 a 6)
         </h3>
@@ -63,14 +62,14 @@ export const BoxingLibraryView: React.FC = () => {
           {punchGuide.map(p => (
             <div
               key={p.num}
-              className={`bg-zinc-950 border ${p.color} rounded-xl p-3 flex items-start space-x-3 shadow-inner`}
+              className={`bg-zinc-950 border ${p.color} rounded-xl p-3 flex items-start space-x-3`}
             >
               <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-700 flex items-center justify-center text-lg font-black text-white shrink-0">
                 {p.num}
               </div>
               <div>
                 <h4 className="font-extrabold text-white text-xs">{p.name}</h4>
-                <p className="text-[11px] text-zinc-400 mt-0.5 leading-tight">{p.desc}</p>
+                <p className="text-[12.5px] text-zinc-400 mt-0.5 leading-tight">{p.desc}</p>
               </div>
             </div>
           ))}
@@ -87,12 +86,12 @@ export const BoxingLibraryView: React.FC = () => {
           {routines.map(rot => (
             <div
               key={rot.id}
-              className="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-2xl p-5 shadow-xl space-y-3 flex flex-col justify-between"
+              className="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-2xl p-5 space-y-3 flex flex-col justify-between"
             >
               <div className="space-y-2">
                 <div className="flex items-start justify-between">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded">
+                    <span className="text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded">
                       Nivel: {rot.level} • {rot.durationMinutes} min
                     </span>
                     <h4 className="text-base font-black text-white mt-1.5 leading-snug">{rot.title}</h4>
@@ -102,7 +101,7 @@ export const BoxingLibraryView: React.FC = () => {
                 {/* Combos */}
                 {rot.combos && rot.combos.length > 0 && (
                   <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs space-y-1">
-                    <span className="font-extrabold text-red-400 text-[10px] uppercase tracking-wider block">
+                    <span className="font-extrabold text-red-400 text-xs uppercase tracking-wider block">
                       🥊 Combinaciones Principales
                     </span>
                     <ul className="space-y-1 font-mono text-zinc-200">
@@ -119,7 +118,7 @@ export const BoxingLibraryView: React.FC = () => {
                 {/* Drills */}
                 {rot.drills && rot.drills.length > 0 && (
                   <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs space-y-1">
-                    <span className="font-extrabold text-amber-400 text-[10px] uppercase tracking-wider block">
+                    <span className="font-extrabold text-amber-400 text-xs uppercase tracking-wider block">
                       ⏱️ Drills & Trabajo Técnico
                     </span>
                     <ul className="space-y-1 text-zinc-300">
@@ -142,7 +141,7 @@ export const BoxingLibraryView: React.FC = () => {
                     setRoutineToEdit(rot);
                     setModalOpen(true);
                   }}
-                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold px-3 py-1.5 rounded-lg border border-zinc-700 cursor-pointer flex items-center space-x-1"
+                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-bold px-3 py-2 min-h-11 rounded-lg border border-zinc-700 cursor-pointer flex items-center space-x-1"
                 >
                   <Edit3 className="w-3.5 h-3.5 text-blue-400" />
                   <span>Editar</span>
@@ -150,7 +149,7 @@ export const BoxingLibraryView: React.FC = () => {
 
                 <button
                   onClick={() => handleDelete(rot.id)}
-                  className="bg-zinc-800 hover:bg-red-900 text-zinc-400 hover:text-red-300 text-xs font-bold px-3 py-1.5 rounded-lg border border-zinc-700 cursor-pointer"
+                  className="bg-zinc-800 hover:bg-red-900 text-zinc-400 hover:text-red-300 text-xs font-bold px-3 py-2 min-h-11 rounded-lg border border-zinc-700 cursor-pointer"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>

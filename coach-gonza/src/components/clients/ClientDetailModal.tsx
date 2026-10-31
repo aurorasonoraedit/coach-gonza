@@ -70,25 +70,25 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
             </div>
             <div>
               <h2 className="text-base font-extrabold text-white leading-tight">{client.name}</h2>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-red-400">
+              <span className="text-xs font-bold uppercase tracking-wider text-red-400">
                 {client.level} • {client.goal.replace('_', ' ')}
               </span>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="grid grid-cols-4 bg-zinc-950 border-b border-zinc-800 text-[11px] font-bold text-center">
+        <div className="grid grid-cols-4 bg-zinc-950 border-b border-zinc-800 text-[12.5px] font-bold text-center">
           <button
             onClick={() => setActiveTab('info')}
             className={`py-2.5 transition-all cursor-pointer ${
-              activeTab === 'info' ? 'text-red-500 border-b-2 border-red-500 bg-zinc-900/60' : 'text-zinc-400 hover:text-zinc-200'
+              activeTab === 'info' ? 'text-red-500 border-b-2 border-ring-red bg-zinc-900/60' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             Perfil
@@ -96,7 +96,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
           <button
             onClick={() => setActiveTab('progress')}
             className={`py-2.5 transition-all cursor-pointer ${
-              activeTab === 'progress' ? 'text-red-500 border-b-2 border-red-500 bg-zinc-900/60' : 'text-zinc-400 hover:text-zinc-200'
+              activeTab === 'progress' ? 'text-red-500 border-b-2 border-ring-red bg-zinc-900/60' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             Progreso{progressCount ? ` (${progressCount})` : ''}
@@ -104,7 +104,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
           <button
             onClick={() => setActiveTab('sessions')}
             className={`py-2.5 transition-all cursor-pointer ${
-              activeTab === 'sessions' ? 'text-red-500 border-b-2 border-red-500 bg-zinc-900/60' : 'text-zinc-400 hover:text-zinc-200'
+              activeTab === 'sessions' ? 'text-red-500 border-b-2 border-ring-red bg-zinc-900/60' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             Clases ({clientSessions.length})
@@ -112,7 +112,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
           <button
             onClick={() => setActiveTab('payments')}
             className={`py-2.5 transition-all cursor-pointer ${
-              activeTab === 'payments' ? 'text-red-500 border-b-2 border-red-500 bg-zinc-900/60' : 'text-zinc-400 hover:text-zinc-200'
+              activeTab === 'payments' ? 'text-red-500 border-b-2 border-ring-red bg-zinc-900/60' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
             Pagos ({clientIncomes.length})
@@ -158,7 +158,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
                   <div>
                     <span className="text-amber-300/90 font-semibold block">Debe</span>
                     <span className="text-lg font-black text-amber-300">{fmt(totalDebt)}</span>
-                    <span className="text-[10px] text-amber-400/70 block">{pendingIncomes.length} pago(s) pendiente(s)</span>
+                    <span className="text-xs text-amber-400/70 block">{pendingIncomes.length} pago(s) pendiente(s)</span>
                   </div>
                   <a
                     href={waLink(
@@ -181,7 +181,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
 
               {/* Package Status Card */}
               {clientPackage ? (
-                <div className="bg-gradient-to-r from-zinc-950 to-red-950/40 border border-red-900/40 rounded-xl p-3.5 space-y-2">
+                <div className="bg-zinc-900 border border-red-900/40 rounded-xl p-3.5 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="font-extrabold text-white flex items-center gap-1.5">
                       <Package className="w-4 h-4 text-red-500" /> Paquete Activo: {clientPackage.name}
@@ -194,7 +194,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
                   {/* Progress bar */}
                   <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
                     <div
-                      className="bg-red-600 h-full transition-all"
+                      className="bg-ring-red h-full transition-all"
                       style={{
                         width: `${Math.min(
                           100,
@@ -270,9 +270,9 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
                   <div key={s.id} className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs flex justify-between items-center">
                     <div>
                       <p className="font-bold text-white">{s.title}</p>
-                      <p className="text-[11px] text-zinc-400">{formatShortDate(s.date)} • {s.startTime}</p>
+                      <p className="text-[12.5px] text-zinc-400">{formatShortDate(s.date)} • {s.startTime}</p>
                     </div>
-                    <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${
+                    <span className={`text-xs font-bold uppercase px-2 py-0.5 rounded border ${
                       s.status === 'completada' ? 'bg-green-950 text-green-400 border-green-800' : 'bg-blue-950 text-blue-400 border-blue-800'
                     }`}>
                       {s.status}
@@ -293,7 +293,7 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({ client, on
                   <div key={inc.id} className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs flex justify-between items-center">
                     <div>
                       <p className="font-bold text-white">{inc.concept}</p>
-                      <p className="text-[11px] text-zinc-400">{formatShortDate(inc.date)} • {paymentLabel(inc.paymentMethod)}</p>
+                      <p className="text-[12.5px] text-zinc-400">{formatShortDate(inc.date)} • {paymentLabel(inc.paymentMethod)}</p>
                     </div>
                     <span className="font-extrabold text-green-400 text-sm">
                       {formatCurrency(inc.amount, profile.currencySymbol)}

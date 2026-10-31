@@ -59,17 +59,17 @@ export const buildGreeting = (opts: {
   const tomorrow = isoDate(tomorrowDate);
 
   const saludo = hour >= 5 && hour < 12 ? 'Buen día' : hour >= 12 && hour < 20 ? 'Buenas tardes' : 'Buenas noches';
-  const emoji = hour >= 5 && hour < 12 ? '☀️' : hour >= 12 && hour < 20 ? '🥊' : '🌙';
-  const title = `${saludo}, ${nickname} ${emoji}`;
+  const title = `${saludo}, ${nickname}`;
 
   const active = (s: Session) => s.status !== 'cancelada';
   const byTime = (a: Session, b: Session) => toMin(a.startTime) - toMin(b.startTime);
   const todayList = sessions.filter(s => s.date === today && active(s)).sort(byTime);
   const tomorrowList = sessions.filter(s => s.date === tomorrow && active(s)).sort(byTime);
 
-  const current = todayList.find(s => toMin(s.startTime) <= nowMin && nowMin < toMin(s.endTime));
-  const next = todayList.find(s => toMin(s.startTime) > nowMin);
-  const remainingToday = todayList.filter(s => toMin(s.startTime) > nowMin).length;
+  const current = todayList.find(s => toMin(s.startTime) <= nowMin && nowMin < toMin(s.endTime) && s.status !== 'completada');
+  const pendingToday = todayList.filter(s => toMin(s.startTime) > nowMin && s.status !== 'completada');
+  const next = pendingToday[0];
+  const remainingToday = pendingToday.length;
 
   let line: string;
   if (current) {

@@ -104,4 +104,4 @@ export const buildFightPlan = (r: Rival): PlanTip[] => {
 };
 
 export const planToText = (r: Rival, tips: PlanTip[]) =>
-  `Plan vs ${r.name}:\n` + tips.map(t => `${AREA_LABEL[t.area].emoji} ${t.text}`).join('\n');
+  `Plan vs ${r.name}:\n` + tips.map(t => `• ${AREA_LABEL[t.area].label}: ${t.text}`).join('\n');

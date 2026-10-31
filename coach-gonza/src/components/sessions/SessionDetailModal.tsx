@@ -62,7 +62,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session,
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -90,7 +90,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session,
               </span>
               <p className="font-bold text-white text-sm truncate">{session.clientName || 'Cliente General'}</p>
               {client && (
-                <p className="text-[10px] text-zinc-400 font-medium">Nivel: {client.level}</p>
+                <p className="text-xs text-zinc-400 font-medium">Nivel: {client.level}</p>
               )}
             </div>
 
@@ -105,7 +105,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session,
           {/* Payment & Status Badges */}
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3">
-              <span className="text-[11px] text-zinc-400 block mb-1">Estado de la Sesión</span>
+              <span className="text-[12.5px] text-zinc-400 block mb-1">Estado de la Sesión</span>
               <span
                 className={`text-xs font-extrabold uppercase px-2.5 py-1 rounded-lg border inline-block ${
                   session.status === 'completada'
@@ -120,11 +120,11 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session,
             </div>
 
             <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3">
-              <span className="text-[11px] text-zinc-400 block mb-1">Precio & Cobro</span>
+              <span className="text-[12.5px] text-zinc-400 block mb-1">Precio & Cobro</span>
               <p className="font-extrabold text-white text-sm">
                 {formatCurrency(session.price, profile.currencySymbol)}{' '}
                 <span
-                  className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ml-1 ${
+                  className={`text-xs font-bold uppercase px-2 py-0.5 rounded border ml-1 ${
                     session.paymentStatus === 'pagada'
                       ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
                       : 'bg-amber-950 text-amber-400 border-amber-800'
@@ -144,7 +144,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session,
               </span>
               {routine.combos && routine.combos.length > 0 && (
                 <div className="space-y-1">
-                  <p className="text-[11px] text-zinc-400 font-semibold">Combinaciones a trabajar:</p>
+                  <p className="text-[12.5px] text-zinc-400 font-semibold">Combinaciones a trabajar:</p>
                   <ul className="list-disc list-inside text-xs text-zinc-200 font-mono space-y-0.5">
                     {routine.combos.map((combo, idx) => (
                       <li key={idx}>{combo}</li>
@@ -171,7 +171,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({ session,
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-emerald-300 text-xs font-bold py-2.5 rounded-xl flex items-center justify-center space-x-2 transition-all"
+              className="w-full bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-emerald-300 text-xs font-bold py-2.5 min-h-11 rounded-xl flex items-center justify-center space-x-2 transition-all"
             >
               <MessageCircle className="w-4 h-4 text-emerald-400" />
               <span>Contactar Cliente por WhatsApp</span>

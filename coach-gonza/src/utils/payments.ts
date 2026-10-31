@@ -1,10 +1,11 @@
+import { Banknote, Landmark, Smartphone, LucideIcon } from 'lucide-react';
 import { PaymentMethod } from '../types';
 
 // Métodos que se ofrecen al cargar un cobro (Argentina)
-export const PAYMENT_METHODS: { id: PaymentMethod; label: string; short: string; emoji: string }[] = [
-  { id: 'efectivo', label: 'Efectivo', short: 'Efectivo', emoji: '💵' },
-  { id: 'transferencia', label: 'Transferencia bancaria', short: 'Transferencia', emoji: '🏦' },
-  { id: 'mercadopago', label: 'Mercado Pago', short: 'Mercado Pago', emoji: '📱' }
+export const PAYMENT_METHODS: { id: PaymentMethod; label: string; short: string; emoji: string; icon: LucideIcon }[] = [
+  { id: 'efectivo', label: 'Efectivo', short: 'Efectivo', emoji: '💵', icon: Banknote },
+  { id: 'transferencia', label: 'Transferencia bancaria', short: 'Transferencia', emoji: '🏦', icon: Landmark },
+  { id: 'mercadopago', label: 'Mercado Pago', short: 'Mercado Pago', emoji: '📱', icon: Smartphone }
 ];
 
 // Valores de versiones anteriores: se siguen mostrando bien si ya estaban cargados

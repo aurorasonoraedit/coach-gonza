@@ -81,6 +81,10 @@ interface AppContextType {
   quickAddDefaultType: 'session' | 'client' | 'income' | 'event' | null;
   openQuickAdd: (type?: 'session' | 'client' | 'income' | 'event') => void;
   closeQuickAdd: () => void;
+  cornerEventId: string | null;
+  setCornerEventId: (id: string | null) => void;
+  rivalEditEventId: string | null;
+  setRivalEditEventId: (id: string | null) => void;
   payPrompt: { sessionId?: string; incomeId?: string } | null;
   openPayPrompt: (target: { sessionId?: string; incomeId?: string }) => void;
   closePayPrompt: () => void;
@@ -154,15 +158,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [expenses, setExpenses] = useState<Expense[]>(() => load(STORAGE_KEYS.EXPENSES, [] as Expense[]));
   const [progress, setProgress] = useState<ProgressEntry[]>(() => load(STORAGE_KEYS.PROGRESS, [] as ProgressEntry[]));
 
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.THEME);
-    return (saved as 'dark' | 'light') || 'dark';
-  });
+  // La app es solo oscura: el rincón de box es negro (el modo claro quedó retirado)
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [quickAddModalOpen, setQuickAddModalOpen] = useState<boolean>(false);
   const [quickAddDefaultType, setQuickAddDefaultType] = useState<'session' | 'client' | 'income' | 'event' | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [cornerEventId, setCornerEventId] = useState<string | null>(null);
+  const [rivalEditEventId, setRivalEditEventId] = useState<string | null>(null);
   const [payPrompt, setPayPrompt] = useState<{ sessionId?: string; incomeId?: string } | null>(null);
 
   // Sync to localStorage
@@ -679,6 +683,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         quickAddDefaultType,
         openQuickAdd,
         closeQuickAdd,
+        cornerEventId,
+        setCornerEventId,
+        rivalEditEventId,
+        setRivalEditEventId,
         payPrompt,
         openPayPrompt,
         closePayPrompt,

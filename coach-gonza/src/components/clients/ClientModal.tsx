@@ -61,11 +61,11 @@ export const ClientModal: React.FC<ClientModalProps> = ({ clientToEdit, onClose 
         {/* Header */}
         <div className="flex items-center justify-between bg-zinc-950 px-5 py-4 border-b border-zinc-800">
           <h2 className="text-base font-bold text-white tracking-tight">
-            {clientToEdit ? 'Editar Datos del Cliente' : 'Registrar Nuevo Cliente'}
+            {clientToEdit ? 'Editar Datos del Cliente' : 'Registrar Nuevo alumno'}
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -82,7 +82,7 @@ export const ClientModal: React.FC<ClientModalProps> = ({ clientToEdit, onClose 
               placeholder="Ej. Roberto Juárez"
               value={name}
               onChange={e => setName(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-ring-red"
             />
           </div>
 
@@ -91,20 +91,20 @@ export const ClientModal: React.FC<ClientModalProps> = ({ clientToEdit, onClose 
               <label className="block text-xs font-semibold text-zinc-300 mb-1">Teléfono</label>
               <input
                 type="tel"
-                placeholder="+52 55 1234 5678"
+                placeholder="11 2345-6789"
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
             <div>
               <label className="block text-xs font-semibold text-zinc-300 mb-1">WhatsApp (número directo)</label>
               <input
                 type="text"
-                placeholder="525512345678"
+                placeholder="Si es distinto al teléfono"
                 value={whatsapp}
                 onChange={e => setWhatsapp(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
           </div>
@@ -113,10 +113,10 @@ export const ClientModal: React.FC<ClientModalProps> = ({ clientToEdit, onClose 
             <label className="block text-xs font-semibold text-zinc-300 mb-1">Email Opcional</label>
             <input
               type="email"
-              placeholder="cliente@email.com"
+              placeholder="nombre@email.com"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             />
           </div>
 
@@ -126,7 +126,7 @@ export const ClientModal: React.FC<ClientModalProps> = ({ clientToEdit, onClose 
               <select
                 value={level}
                 onChange={e => setLevel(e.target.value as ClientLevel)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
                 <option value="principiante">🌱 Principiante</option>
                 <option value="intermedio">⚡ Intermedio</option>
@@ -139,7 +139,7 @@ export const ClientModal: React.FC<ClientModalProps> = ({ clientToEdit, onClose 
               <select
                 value={goal}
                 onChange={e => setGoal(e.target.value as ClientGoal)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
                 <option value="tecnica">🎯 Perfeccionar Técnica</option>
                 <option value="perder_peso">🔥 Bajar de Peso / Quemar Grasa</option>
@@ -155,7 +155,7 @@ export const ClientModal: React.FC<ClientModalProps> = ({ clientToEdit, onClose 
             <select
               value={packageId}
               onChange={e => setPackageId(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             >
               <option value="">-- Sin paquete asignado --</option>
               {packages.map(p => (
@@ -173,13 +173,13 @@ export const ClientModal: React.FC<ClientModalProps> = ({ clientToEdit, onClose 
               placeholder="Lesiones, observaciones de guardia..."
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             ></textarea>
           </div>
 
           <button
             type="submit"
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-red-500/40"
+            className="w-full py-2.5 min-h-11 rounded-xl bg-zinc-900 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-ring-red/40"
           >
             {clientToEdit ? 'Guardar Cambios' : 'Registrar Cliente'}
           </button>

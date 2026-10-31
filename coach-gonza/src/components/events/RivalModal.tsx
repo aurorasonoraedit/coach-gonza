@@ -43,8 +43,8 @@ export const searchLinks = (r: Rival) => {
 };
 
 const inputCls =
-  'w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-amber-500';
-const labelCls = 'block text-[11px] font-semibold text-zinc-300 mb-1';
+  'w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red';
+const labelCls = 'block text-[12.5px] font-semibold text-zinc-300 mb-1';
 
 const num = (v: string) => {
   const n = Number(v.replace(',', '.'));
@@ -132,26 +132,26 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
     }
   };
 
-  const searchBtn = 'flex items-center justify-center gap-1.5 text-[11px] font-bold py-2 rounded-lg border';
+  const searchBtn = 'flex items-center justify-center gap-1.5 text-sm font-bold min-h-11 rounded-xl border';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-zinc-900 border border-zinc-700 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl my-6">
+    <div className="fixed inset-0 z-[95] flex items-end sm:items-center justify-center bg-black/80 sm:p-4 overflow-y-auto">
+      <div className="bg-zinc-900 border border-zinc-700 rounded-t-3xl sm:rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl sm:my-6 max-h-[92vh] flex flex-col">
         <div className="flex items-center justify-between bg-zinc-950 px-5 py-4 border-b border-zinc-800">
           <div className="min-w-0">
-            <h2 className="text-base font-bold text-white tracking-tight">🔎 Ficha del rival</h2>
-            <p className="text-[11px] text-zinc-400 truncate">{event.title}</p>
+            <h2 className="font-display font-extrabold uppercase text-2xl leading-none tracking-tight text-white">Ficha del rival</h2>
+            <p className="text-[12.5px] text-zinc-400 truncate">{event.title}</p>
           </div>
           <button
             onClick={onClose}
             aria-label="Cerrar"
-            className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white cursor-pointer shrink-0"
+            className="w-11 h-11 rounded-xl bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center cursor-pointer shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSave} className="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
+        <form onSubmit={handleSave} className="p-5 pb-8 space-y-4 overflow-y-auto safe-bottom">
           {/* Identidad */}
           <div className="grid grid-cols-2 gap-3">
             <div className="col-span-2 sm:col-span-1">
@@ -166,24 +166,24 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
 
           {/* Búsquedas rápidas */}
           <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 space-y-2">
-            <p className="text-[11px] font-bold text-zinc-300">
+            <p className="text-[12.5px] font-bold text-zinc-300">
               Investigar al rival {links ? '' : '(escribí el nombre primero)'}
             </p>
             <div className={`grid grid-cols-2 gap-2 ${links ? '' : 'opacity-40 pointer-events-none'}`}>
               <a href={links?.boxrec} target="_blank" rel="noopener noreferrer" className={`${searchBtn} bg-zinc-800 border-zinc-700 text-white`}>
                 <Search className="w-3.5 h-3.5" /> Récord en BoxRec
               </a>
-              <a href={links?.youtube} target="_blank" rel="noopener noreferrer" className={`${searchBtn} bg-red-950/60 border-red-900 text-red-200`}>
+              <a href={links?.youtube} target="_blank" rel="noopener noreferrer" className={`${searchBtn} bg-zinc-800 border-zinc-700 text-white`}>
                 <Youtube className="w-3.5 h-3.5" /> Videos de peleas
               </a>
-              <a href={links?.instagram} target="_blank" rel="noopener noreferrer" className={`${searchBtn} bg-fuchsia-950/50 border-fuchsia-900 text-fuchsia-200`}>
+              <a href={links?.instagram} target="_blank" rel="noopener noreferrer" className={`${searchBtn} bg-zinc-800 border-zinc-700 text-white`}>
                 <Instagram className="w-3.5 h-3.5" /> Instagram
               </a>
-              <a href={links?.news} target="_blank" rel="noopener noreferrer" className={`${searchBtn} bg-sky-950/50 border-sky-900 text-sky-200`}>
+              <a href={links?.news} target="_blank" rel="noopener noreferrer" className={`${searchBtn} bg-zinc-800 border-zinc-700 text-white`}>
                 <Newspaper className="w-3.5 h-3.5" /> Noticias
               </a>
             </div>
-            <p className="text-[10px] text-zinc-500 leading-snug">
+            <p className="text-xs text-zinc-500 leading-snug">
               Se abren con el nombre ya buscado. Lo que encuentres lo anotás acá abajo y queda guardado.
             </p>
           </div>
@@ -206,7 +206,7 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
                     placeholder="0"
                     className={`${inputCls} text-center`}
                   />
-                  <span className="block text-[10px] text-zinc-500 text-center mt-0.5">{lbl as string}</span>
+                  <span className="block text-xs text-zinc-500 text-center mt-0.5">{lbl as string}</span>
                 </div>
               ))}
             </div>
@@ -260,7 +260,7 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
                   <Star className={`w-6 h-6 ${n <= level ? 'text-amber-400 fill-amber-400' : 'text-zinc-600'}`} />
                 </button>
               ))}
-              <span className="text-[11px] text-zinc-400 ml-1">
+              <span className="text-[12.5px] text-zinc-400 ml-1">
                 {['Sin evaluar', 'Principiante', 'Regular', 'Bueno', 'Muy bueno', 'Peligroso'][level]}
               </span>
             </div>
@@ -275,8 +275,8 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
                   type="button"
                   key={t}
                   onClick={() => toggleStyle(t)}
-                  className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg border cursor-pointer ${
-                    styles.includes(t) ? 'bg-amber-600 border-amber-500 text-white' : 'bg-zinc-800 border-zinc-700 text-zinc-300'
+                  className={`text-sm font-semibold px-3 min-h-11 rounded-xl border cursor-pointer ${
+                    styles.includes(t) ? 'bg-ring-red border-ring-red text-white' : 'bg-zinc-800 border-zinc-700 text-zinc-300'
                   }`}
                 >
                   {t}
@@ -292,7 +292,7 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
             </div>
             <div>
               <label className={labelCls}>🎯 Puntos débiles</label>
-              <textarea rows={2} value={weaknesses} onChange={e => setWeaknesses(e.target.value)} placeholder="Ej. Baja la izquierda al tirar el cross, no le gusta que lo presionen" className={inputCls} />
+              <textarea rows={2} value={weaknesses} onChange={e => setWeaknesses(e.target.value)} placeholder="Ej. Baja la izquierda al tirar el cross" className={inputCls} />
             </div>
             <div>
               <label className={labelCls}>Notas</label>
@@ -301,27 +301,27 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
           </div>
 
           {/* Plan sugerido */}
-          <div className="bg-gradient-to-b from-amber-950/40 to-zinc-950 border border-amber-800/50 rounded-xl p-3 space-y-2">
-            <p className="text-xs font-black text-amber-300 flex items-center gap-1.5">
+          <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 space-y-2">
+            <p className="font-display font-bold uppercase text-lg text-ring-red flex items-center gap-1.5">
               <Lightbulb className="w-4 h-4" /> Cómo pelearle (sugerido)
             </p>
             {plan.length === 0 ? (
-              <p className="text-[11px] text-zinc-400">
+              <p className="text-[12.5px] text-zinc-400">
                 Completá guardia, estilo, altura o récord y acá aparecen las sugerencias para la esquina.
               </p>
             ) : (
               <ul className="space-y-1.5">
                 {plan.map((t, i) => (
-                  <li key={i} className="text-[11px] text-zinc-200 leading-snug flex gap-1.5">
-                    <span className="shrink-0">{AREA_LABEL[t.area].emoji}</span>
+                  <li key={i} className="text-sm text-zinc-200 leading-snug flex gap-1.5">
+                    <span className="shrink-0 w-1.5 h-1.5 rounded-full bg-ring-red mt-2" />
                     <span>
-                      <span className="font-bold text-amber-200">{AREA_LABEL[t.area].label}:</span> {t.text}
+                      <span className="font-bold text-white">{AREA_LABEL[t.area].label}:</span> {t.text}
                     </span>
                   </li>
                 ))}
               </ul>
             )}
-            <p className="text-[10px] text-zinc-500">Pautas generales según la ficha. El plan final lo decidís vos.</p>
+            <p className="text-xs text-zinc-500">Pautas generales según la ficha. El plan final lo decidís vos.</p>
           </div>
 
           {/* Links guardados */}
@@ -335,7 +335,7 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
           <div className="flex flex-wrap items-center gap-2 pt-1">
             <button
               type="submit"
-              className="flex-1 bg-amber-600 hover:bg-amber-500 text-white font-bold text-sm py-2.5 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
+              className="flex-1 bg-ring-red hover:bg-ring-red-deep text-white font-bold text-sm min-h-12 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Save className="w-4 h-4" /> Guardar ficha
             </button>
@@ -344,7 +344,7 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
                 type="button"
                 onClick={handleSaveWithPlan}
                 title="Guarda la ficha y suma el plan a la estrategia de esquina"
-                className="flex-1 bg-zinc-800 hover:bg-zinc-700 border border-amber-700/60 text-amber-200 font-bold text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
+                className="flex-1 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white font-bold text-sm min-h-12 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <ClipboardCheck className="w-4 h-4" /> Guardar + pasar a la esquina
               </button>
@@ -354,7 +354,7 @@ export const RivalModal: React.FC<Props> = ({ event, onClose }) => {
                 type="button"
                 onClick={handleDelete}
                 aria-label="Borrar ficha"
-                className="p-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-red-300 cursor-pointer"
+                className="w-12 h-12 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-red-300 flex items-center justify-center cursor-pointer"
               >
                 <Trash2 className="w-4 h-4" />
               </button>

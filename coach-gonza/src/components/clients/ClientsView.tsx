@@ -27,24 +27,23 @@ export const ClientsView: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6 pb-24 pt-2 px-4 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto">
       
       {/* Header & Action Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-lg">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
-            <Users className="w-5 h-5 text-red-500" /> Directorio de Clientes ({clients.length})
+          <h1 className="font-display font-extrabold uppercase text-3xl tracking-tight leading-none">Alumnos ({clients.length})
           </h1>
-          <p className="text-xs text-zinc-400 mt-0.5">
-            Administra tus alumnos, paquetes de sesiones y datos de contacto.
+          <p className="text-sm text-zinc-400 mt-1.5">
+            Tus alumnos, sus paquetes y cómo contactarlos.
           </p>
         </div>
 
         <div className="flex items-center space-x-2">
           <button
             onClick={() => exportClientsToCSV(clients)}
-            className="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-all border border-zinc-700 cursor-pointer text-xs font-semibold flex items-center space-x-1"
-            title="Exportar Clientes a CSV"
+            className="min-w-11 min-h-11 inline-flex items-center justify-center rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-all border border-zinc-700 cursor-pointer text-xs font-semibold flex items-center space-x-1"
+            title="Exportar alumnos a CSV" aria-label="Exportar alumnos a CSV"
           >
             <Download className="w-4 h-4 text-blue-400" />
             <span className="hidden sm:inline">Exportar CSV</span>
@@ -52,10 +51,10 @@ export const ClientsView: React.FC = () => {
 
           <button
             onClick={() => setModalOpen(true)}
-            className="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-3 py-2.5 rounded-xl flex items-center space-x-1 shadow-lg transition-all cursor-pointer border border-red-500/40"
+            className="bg-ring-red hover:bg-ring-red-deep text-white text-xs font-bold px-3 py-2.5 min-h-11 rounded-xl flex items-center space-x-1 transition-all cursor-pointer border border-ring-red/40"
           >
             <Plus className="w-4 h-4" />
-            <span>Nuevo Cliente</span>
+            <span>Nuevo alumno</span>
           </button>
         </div>
       </div>
@@ -70,7 +69,7 @@ export const ClientsView: React.FC = () => {
             placeholder="Buscar por nombre, teléfono o notas..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl pl-10 pr-4 py-2.5 text-white text-sm focus:outline-none focus:border-red-500 shadow-inner"
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl pl-10 pr-4 py-2.5 text-white text-sm focus:outline-none focus:border-ring-red"
           />
         </div>
 
@@ -78,17 +77,17 @@ export const ClientsView: React.FC = () => {
         <div className="flex items-center space-x-2 overflow-x-auto pb-1 text-xs font-bold">
           {[
             { id: 'all', label: 'Todos' },
-            { id: 'principiante', label: '🌱 Principiantes' },
-            { id: 'intermedio', label: '⚡ Intermedios' },
-            { id: 'avanzado', label: '🔥 Avanzados' },
-            { id: 'competidor', label: '🥊 Competidores' }
+            { id: 'principiante', label: 'Principiantes' },
+            { id: 'intermedio', label: 'Intermedios' },
+            { id: 'avanzado', label: 'Avanzados' },
+            { id: 'competidor', label: 'Competidores' }
           ].map(chip => (
             <button
               key={chip.id}
               onClick={() => setSelectedLevelFilter(chip.id)}
-              className={`px-3 py-1.5 rounded-xl transition-all whitespace-nowrap cursor-pointer border ${
+              className={`px-3 py-2 min-h-11 rounded-xl transition-all whitespace-nowrap cursor-pointer border ${
                 selectedLevelFilter === chip.id
-                  ? 'bg-red-600 border-red-500 text-white shadow'
+                  ? 'bg-ring-red border-ring-red text-white shadow'
                   : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-zinc-200'
               }`}
             >
@@ -113,7 +112,7 @@ export const ClientsView: React.FC = () => {
             return (
               <div
                 key={c.id}
-                className="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-2xl p-4 transition-all shadow-md flex flex-col justify-between space-y-3"
+                className="bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-2xl p-4 transition-all flex flex-col justify-between space-y-3"
               >
                 <div>
                   <div className="flex items-start justify-between">
@@ -124,10 +123,10 @@ export const ClientsView: React.FC = () => {
                       <div>
                         <h3 className="font-bold text-white text-sm leading-snug">{c.name}</h3>
                         <div className="flex items-center space-x-1.5 mt-0.5">
-                          <span className="text-[10px] font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 px-1.5 py-0.2 rounded">
+                          <span className="text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 px-1.5 py-0.2 rounded">
                             {c.level}
                           </span>
-                          <span className="text-[10px] text-zinc-400 font-medium">
+                          <span className="text-xs text-zinc-400 font-medium">
                             • {c.goal.replace('_', ' ')}
                           </span>
                         </div>
@@ -139,7 +138,7 @@ export const ClientsView: React.FC = () => {
                         href={`${waBase(c.whatsapp || c.phone)}?text=${encodeURIComponent(`Hola ${c.name}, te saludo de parte del entrenador.`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 rounded-xl bg-emerald-950/80 text-emerald-400 border border-emerald-800 hover:bg-emerald-900 transition-colors"
+                        className="min-w-11 min-h-11 inline-flex items-center justify-center rounded-xl bg-emerald-950/80 text-emerald-400 border border-emerald-800 hover:bg-emerald-900 transition-colors"
                         title="Abrir WhatsApp"
                       >
                         <MessageCircle className="w-4 h-4" />
@@ -160,7 +159,7 @@ export const ClientsView: React.FC = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="mt-3 text-[11px] text-zinc-500 italic">
+                    <div className="mt-3 text-[12.5px] text-zinc-500 italic">
                       Sin paquete activo asignado
                     </div>
                   )}
@@ -174,13 +173,13 @@ export const ClientsView: React.FC = () => {
 
                 {/* Footer Buttons */}
                 <div className="border-t border-zinc-800/80 pt-2.5 flex items-center justify-between text-xs">
-                  <span className="text-zinc-500 font-medium text-[11px]">
+                  <span className="text-zinc-500 font-medium text-[12.5px]">
                     {c.totalSessionsCompleted || 0} sesiones hechas
                   </span>
                   
                   <button
                     onClick={() => setSelectedClient(c)}
-                    className="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-3 py-1.5 rounded-lg border border-zinc-700 transition-all cursor-pointer"
+                    className="bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-3 py-2 min-h-11 rounded-lg border border-zinc-700 transition-all cursor-pointer"
                   >
                     Ver Perfil
                   </button>

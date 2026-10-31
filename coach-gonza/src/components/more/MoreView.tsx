@@ -1,53 +1,52 @@
-import React, { useState } from 'react';
-import { Package, Swords, BookOpen, Settings, Newspaper, Timer } from 'lucide-react';
-import { RoundTimerView } from '../timer/RoundTimerView';
-import { PackagesView } from '../packages/PackagesView';
-import { EventsView } from '../events/EventsView';
-import { BoxingLibraryView } from '../library/BoxingLibraryView';
-import { SettingsView } from '../settings/SettingsView';
-import { NewsView } from '../news/NewsView';
+import React from 'react';
+import { Package, Swords, BookOpen, Settings, Newspaper, ChevronRight } from 'lucide-react';
+import { useApp } from '../../context/AppContext';
 
-type SubTab = 'news' | 'timer' | 'packages' | 'events' | 'library' | 'settings';
-
-const TABS: { id: SubTab; label: string; icon: React.ElementType }[] = [
-  { id: 'news', label: 'Noticias', icon: Newspaper },
-  { id: 'timer', label: 'Timer', icon: Timer },
-  { id: 'packages', label: 'Paquetes', icon: Package },
-  { id: 'events', label: 'Peleas', icon: Swords },
-  { id: 'library', label: 'Rutinas', icon: BookOpen },
-  { id: 'settings', label: 'Ajustes', icon: Settings }
+const SECTIONS: { id: string; label: string; detail: string; icon: React.ElementType }[] = [
+  { id: 'events', label: 'Peleas', detail: 'Veladas, ficha del rival y plan de esquina', icon: Swords },
+  { id: 'news', label: 'Noticias', detail: 'Lo último del boxeo, se actualiza solo', icon: Newspaper },
+  { id: 'packages', label: 'Paquetes', detail: 'Precios de clases, packs y mensualidades', icon: Package },
+  { id: 'library', label: 'Rutinas', detail: 'Combinaciones, ejercicios y preparación física', icon: BookOpen },
+  { id: 'settings', label: 'Ajustes', detail: 'Tu perfil, copia de seguridad y datos', icon: Settings }
 ];
 
 export const MoreView: React.FC = () => {
-  const [subTab, setSubTab] = useState<SubTab>('news');
+  const { setActiveTab, events } = useApp();
+  const today = new Date().toISOString().slice(0, 10);
+  const upcomingFights = events.filter(e => e.date >= today && (e.type === 'pelea' || e.type === 'competencia')).length;
 
   return (
-    <div className="space-y-5 pt-1 max-w-7xl mx-auto">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-1.5 grid grid-cols-6 gap-0.5 shadow-lg">
-        {TABS.map(t => {
-          const Icon = t.icon;
-          const active = subTab === t.id;
+    <div className="max-w-2xl mx-auto">
+      <h1 className="font-display font-extrabold uppercase text-3xl tracking-tight mb-3">Más</h1>
+      <ul className="divide-y divide-zinc-800 border-y border-zinc-800">
+        {SECTIONS.map(s => {
+          const Icon = s.icon;
           return (
-            <button
-              key={t.id}
-              onClick={() => setSubTab(t.id)}
-              className={`py-2 px-0.5 rounded-xl flex flex-col items-center justify-center gap-1 transition-all cursor-pointer ${
-                active ? 'bg-red-600 text-white shadow' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
-              }`}
-            >
-              <Icon className="w-4 h-4 shrink-0" />
-              <span className="text-[9.5px] font-bold leading-none">{t.label}</span>
-            </button>
+            <li key={s.id}>
+              <button
+                onClick={() => setActiveTab(s.id)}
+                className="w-full min-h-16 py-3 flex items-center gap-4 text-left cursor-pointer group"
+              >
+                <span className="w-11 h-11 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shrink-0 text-zinc-300 group-hover:text-white">
+                  <Icon className="w-5 h-5" />
+                </span>
+                <span className="flex-1 min-w-0">
+                  <span className="flex items-center gap-2">
+                    <span className="font-display font-bold uppercase text-xl tracking-wide leading-none">{s.label}</span>
+                    {s.id === 'events' && upcomingFights > 0 && (
+                      <span className="text-xs font-bold text-white bg-ring-red rounded-full px-2 py-0.5 tabular">
+                        {upcomingFights} próxima{upcomingFights > 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </span>
+                  <span className="block text-sm text-zinc-400 mt-1">{s.detail}</span>
+                </span>
+                <ChevronRight className="w-5 h-5 text-zinc-600 shrink-0" />
+              </button>
+            </li>
           );
         })}
-      </div>
-
-      {subTab === 'news' && <NewsView />}
-      {subTab === 'timer' && <RoundTimerView />}
-      {subTab === 'packages' && <PackagesView />}
-      {subTab === 'events' && <EventsView />}
-      {subTab === 'library' && <BoxingLibraryView />}
-      {subTab === 'settings' && <SettingsView />}
+      </ul>
     </div>
   );
 };

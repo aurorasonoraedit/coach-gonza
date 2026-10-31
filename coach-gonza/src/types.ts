@@ -94,6 +94,7 @@ export interface FightEvent {
   isImportant?: boolean;
   cornerNotes?: string; // Táctica / Estrategia de la esquina
   rival?: Rival;
+  boxerId?: string; // alumno propio que pelea
 }
 
 export type Stance = 'ortodoxo' | 'zurdo' | 'cambia';

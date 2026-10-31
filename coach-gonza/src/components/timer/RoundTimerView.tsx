@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Play, Pause, RotateCcw, SkipForward, Timer, Minus, Plus, Volume2 } from 'lucide-react';
+import { Play, SkipForward, Minus, Plus, Volume2, X, Bell } from 'lucide-react';
+import { askConfirm } from '../../utils/confirm';
 
 type Phase = 'idle' | 'prep' | 'round' | 'rest' | 'done';
 
@@ -105,15 +106,15 @@ const Stepper: React.FC<{
   onMinus: () => void;
   onPlus: () => void;
 }> = ({ label, value, onMinus, onPlus }) => (
-  <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-center">
-    <span className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider">{label}</span>
-    <div className="flex items-center justify-between mt-1">
-      <button onClick={onMinus} aria-label={`Menos ${label}`} className="p-1.5 rounded-lg bg-zinc-800 text-zinc-200 cursor-pointer active:scale-95">
-        <Minus className="w-4 h-4" />
+  <div className="py-3 flex items-center justify-between gap-3">
+    <span className="text-sm font-semibold text-zinc-300">{label}</span>
+    <div className="flex items-center gap-2">
+      <button onClick={onMinus} aria-label={`Menos: ${label}`} className="w-11 h-11 rounded-xl bg-zinc-800 text-white flex items-center justify-center cursor-pointer active:scale-95">
+        <Minus className="w-5 h-5" />
       </button>
-      <span className="text-base font-black text-white tabular-nums">{value}</span>
-      <button onClick={onPlus} aria-label={`Más ${label}`} className="p-1.5 rounded-lg bg-zinc-800 text-zinc-200 cursor-pointer active:scale-95">
-        <Plus className="w-4 h-4" />
+      <span className="w-16 text-center font-display font-bold text-2xl text-white tabular">{value}</span>
+      <button onClick={onPlus} aria-label={`Más: ${label}`} className="w-11 h-11 rounded-xl bg-zinc-800 text-white flex items-center justify-center cursor-pointer active:scale-95">
+        <Plus className="w-5 h-5" />
       </button>
     </div>
   </div>
@@ -253,135 +254,160 @@ export const RoundTimerView: React.FC = () => {
     advance();
   };
 
-  const totalPhase = phase === 'prep' ? PREP_SEC : phase === 'rest' ? config.restSec : config.roundSec;
-  const pct = phase === 'idle' ? 1 : phase === 'done' ? 0 : Math.max(0, Math.min(1, remaining / totalPhase));
+  const handleStop = async () => {
+    const midSession = phase === 'prep' || phase === 'round' || phase === 'rest';
+    if (midSession && !(await askConfirm('¿Cortar el timer? Se pierde el round en curso.', { okLabel: 'Cortar' }))) return;
+    handleReset();
+  };
+
   const inWarning = phase === 'round' && config.warnSec > 0 && remaining <= config.warnSec;
-
-  const theme =
-    phase === 'round'
-      ? inWarning
-        ? { ring: '#f59e0b', label: 'text-amber-400', bg: 'from-amber-950/50' }
-        : { ring: '#ef4444', label: 'text-red-400', bg: 'from-red-950/50' }
-      : phase === 'rest'
-      ? { ring: '#10b981', label: 'text-emerald-400', bg: 'from-emerald-950/50' }
-      : phase === 'prep'
-      ? { ring: '#3b82f6', label: 'text-blue-400', bg: 'from-blue-950/50' }
-      : { ring: '#52525b', label: 'text-zinc-300', bg: 'from-zinc-900' };
-
-  const phaseLabel =
-    phase === 'prep' ? '¡Preparate!' :
-    phase === 'round' ? `Round ${round} de ${config.rounds}` :
-    phase === 'rest' ? `Descanso · R${round + 1} en` :
-    phase === 'done' ? '¡Terminado! 🥊' :
-    `${config.rounds} rounds de ${mmss(config.roundSec)}`;
-
-  const R = 108;
-  const C = 2 * Math.PI * R;
   const setCfg = (patch: Partial<Config>) => setConfig(c => ({ ...c, ...patch }));
   const activePreset = PRESETS.find(
     p => p.config.rounds === config.rounds && p.config.roundSec === config.roundSec && p.config.restSec === config.restSec
   )?.id;
-  const editable = phase === 'idle' || phase === 'done';
+  const totalTime = config.rounds * config.roundSec + Math.max(0, config.rounds - 1) * config.restSec;
 
-  return (
-    <div className="space-y-4">
-      <div className={`bg-gradient-to-b ${theme.bg} to-zinc-900 border border-zinc-800 rounded-3xl p-5 shadow-xl`}>
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-black text-white flex items-center gap-2">
-            <Timer className="w-5 h-5 text-red-500" /> Timer de rounds
-          </h2>
-          <span className="text-[10px] text-zinc-400 flex items-center gap-1">
-            <Volume2 className="w-3.5 h-3.5" /> Sacá el modo silencio
-          </span>
-        </div>
+  // ---------- Modo ring: pantalla completa mientras hay rounds en curso ----------
+  if (phase !== 'idle') {
+    const bg =
+      phase === 'round' ? (inWarning ? 'bg-amber-600' : 'bg-ring-red')
+      : phase === 'rest' ? 'bg-green-600'
+      : 'bg-zinc-950';
+    const label =
+      phase === 'prep' ? 'Preparate'
+      : phase === 'round' ? (inWarning ? 'Últimos segundos' : 'Round')
+      : phase === 'rest' ? 'Descanso'
+      : 'Terminado';
+    const clock = phase === 'done' ? mmss(totalTime) : mmss(remaining);
+    const paused = !running && phase !== 'done';
 
-        {/* Reloj */}
-        <div className="relative mx-auto mt-4 w-64 h-64 max-w-full">
-          <svg viewBox="0 0 240 240" className="w-full h-full -rotate-90">
-            <circle cx="120" cy="120" r={R} stroke="#27272a" strokeWidth="12" fill="none" />
-            <circle
-              cx="120"
-              cy="120"
-              r={R}
-              stroke={theme.ring}
-              strokeWidth="12"
-              fill="none"
-              strokeLinecap="round"
-              strokeDasharray={C}
-              strokeDashoffset={C * (1 - pct)}
-              style={{ transition: 'stroke-dashoffset 0.12s linear, stroke 0.3s' }}
-            />
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className={`text-xs font-black uppercase tracking-wider ${theme.label}`}>{phaseLabel}</span>
-            <span className={`text-6xl font-black tabular-nums mt-1 ${inWarning ? 'text-amber-300' : 'text-white'}`}>
-              {phase === 'done' ? '0:00' : mmss(remaining)}
-            </span>
-            {phase !== 'idle' && phase !== 'done' && (
-              <div className="flex gap-1 mt-3">
-                {Array.from({ length: Math.min(config.rounds, 12) }).map((_, i) => (
-                  <span
-                    key={i}
-                    className={`w-2 h-2 rounded-full ${
-                      i + 1 < round || (i + 1 === round && phase === 'rest') ? 'bg-red-500' : i + 1 === round ? 'bg-white' : 'bg-zinc-700'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
+    return (
+      <div
+        className={`fixed inset-0 z-[90] ${bg} text-white flex flex-col select-none`}
+        role="timer"
+        aria-live="polite"
+        aria-label={`${label}, round ${round} de ${config.rounds}, quedan ${mmss(remaining)}`}
+      >
+        {/* Arriba: round actual y cortar */}
+        <div className="safe-top px-5 flex items-start justify-between">
+          <div className="font-display font-extrabold leading-none tabular">
+            <span className="text-5xl">{Math.min(round, config.rounds)}</span>
+            <span className="text-3xl opacity-70">/{config.rounds}</span>
           </div>
+          <button
+            onClick={phase === 'done' ? handleReset : handleStop}
+            aria-label={phase === 'done' ? 'Cerrar' : 'Cortar el timer'}
+            className="w-14 h-14 rounded-full bg-black/25 hover:bg-black/40 flex items-center justify-center cursor-pointer"
+          >
+            <X className="w-7 h-7" />
+          </button>
         </div>
 
-        {/* Controles */}
-        <div className="flex items-center justify-center gap-4 mt-4">
-          <button
-            onClick={handleReset}
-            aria-label="Reiniciar"
-            className="w-14 h-14 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-200 flex items-center justify-center cursor-pointer active:scale-95"
+        {/* Centro: el reloj ocupa la pantalla; tocar pausa o sigue */}
+        <button
+          onClick={phase === 'done' ? handleReset : handleStartPause}
+          className="flex-1 flex flex-col items-center justify-center px-4 cursor-pointer"
+          aria-label={phase === 'done' ? 'Listo' : running ? 'Pausar' : 'Seguir'}
+        >
+          <span className="font-display font-bold uppercase tracking-[0.08em] text-[clamp(1.5rem,min(8vw,8vh),3.5rem)] leading-none">
+            {label}
+          </span>
+          <span
+            className="font-display font-extrabold leading-[0.82] tabular mt-2"
+            style={{ fontSize: clock.length > 4 ? 'min(38vw, 44vh)' : 'min(48vw, 50vh)' }}
           >
-            <RotateCcw className="w-5 h-5" />
-          </button>
-          <button
-            onClick={handleStartPause}
-            aria-label={running ? 'Pausar' : 'Empezar'}
-            className={`w-20 h-20 rounded-full text-white flex items-center justify-center shadow-lg cursor-pointer active:scale-95 ${
-              running ? 'bg-zinc-700 border border-zinc-600' : 'bg-red-600 border border-red-500 shadow-red-950/60'
-            }`}
-          >
-            {running ? <Pause className="w-8 h-8" /> : <Play className="w-8 h-8 ml-1" />}
-          </button>
-          <button
-            onClick={handleSkip}
-            disabled={editable}
-            aria-label="Saltar fase"
-            className="w-14 h-14 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-200 flex items-center justify-center cursor-pointer active:scale-95 disabled:opacity-40"
-          >
-            <SkipForward className="w-5 h-5" />
-          </button>
+            {clock}
+          </span>
+          <span className="mt-[min(1rem,2vh)] text-base font-semibold opacity-85 h-6">
+            {phase === 'done'
+              ? `${config.rounds} rounds completos · tocá para cerrar`
+              : paused
+              ? 'En pausa · tocá para seguir'
+              : phase === 'rest'
+              ? `Sigue el round ${round + 1}`
+              : 'Tocá para pausar'}
+          </span>
+        </button>
+
+        {/* Abajo: rounds y saltar */}
+        <div className="safe-bottom px-5 pb-4 flex items-center justify-between gap-4">
+          <div className="flex flex-wrap gap-1.5 max-w-[70%]" aria-hidden="true">
+            {Array.from({ length: config.rounds }).map((_, i) => {
+              const n = i + 1;
+              const done = n < round || (n === round && (phase === 'rest' || phase === 'done'));
+              const current = n === round && phase === 'round';
+              return (
+                <span
+                  key={i}
+                  className={`h-3 rounded-full ${current ? 'w-7 bg-white' : done ? 'w-3 bg-white' : 'w-3 bg-black/30'}`}
+                />
+              );
+            })}
+          </div>
+          {phase !== 'done' && (
+            <button
+              onClick={handleSkip}
+              aria-label="Saltar a la siguiente fase"
+              className="h-14 px-5 rounded-full bg-black/25 hover:bg-black/40 flex items-center gap-2 font-semibold cursor-pointer"
+            >
+              <SkipForward className="w-5 h-5" /> Saltar
+            </button>
+          )}
         </div>
-        <p className="text-center text-[10px] text-zinc-500 mt-3">
-          Campana al empezar y terminar cada round · golpe de aviso a los {config.warnSec || '—'} segundos del final
-        </p>
+      </div>
+    );
+  }
+
+  // ---------- Configuración (antes de empezar) ----------
+  return (
+    <div className="max-w-xl mx-auto space-y-5">
+      <div className="flex items-end justify-between">
+        <h1 className="font-display font-extrabold uppercase text-3xl tracking-tight leading-none">Timer</h1>
+        <span className="text-sm text-zinc-400 flex items-center gap-1.5">
+          <Volume2 className="w-4 h-4" /> Sacá el modo silencio
+        </span>
       </div>
 
-      {/* Configuración */}
-      <div className={`bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3 ${editable ? '' : 'opacity-50 pointer-events-none'}`}>
-        <p className="text-xs font-bold text-white uppercase tracking-wider">Configuración</p>
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-          {PRESETS.map(p => (
-            <button
-              key={p.id}
-              onClick={() => setConfig(p.config)}
-              className={`text-left px-3 py-2 rounded-xl border cursor-pointer transition-all ${
-                activePreset === p.id ? 'bg-red-950/70 border-red-600' : 'bg-zinc-950 border-zinc-800 hover:border-zinc-600'
-              }`}
-            >
-              <span className="block text-xs font-bold text-white">{p.label}</span>
-              <span className="block text-[10px] text-zinc-400">{p.detail}</span>
-            </button>
-          ))}
-        </div>
+      <button
+        onClick={handleStartPause}
+        className="w-full rounded-2xl bg-ring-red hover:bg-ring-red-deep active:scale-[0.99] text-white px-5 py-5 flex items-center justify-between cursor-pointer transition-colors"
+      >
+        <span className="text-left">
+          <span className="block font-display font-extrabold uppercase text-4xl leading-none tracking-tight">Empezar</span>
+          <span className="block text-sm font-semibold mt-1.5 opacity-90 tabular">
+            {config.rounds} × {mmss(config.roundSec)}{config.restSec ? ` · descanso ${mmss(config.restSec)}` : ''} · total {mmss(totalTime)}
+          </span>
+        </span>
+        <span className="w-16 h-16 rounded-full bg-black/20 flex items-center justify-center shrink-0">
+          <Play className="w-8 h-8 ml-1" fill="currentColor" />
+        </span>
+      </button>
+
+      <section aria-labelledby="presets-title">
+        <h2 id="presets-title" className="text-sm font-semibold text-zinc-400 mb-2">Elegí el tipo</h2>
         <div className="grid grid-cols-2 gap-2">
+          {PRESETS.map(p => {
+            const on = activePreset === p.id;
+            return (
+              <button
+                key={p.id}
+                onClick={() => setConfig(p.config)}
+                aria-pressed={on}
+                className={`min-h-16 text-left px-4 py-3 rounded-xl border cursor-pointer transition-colors ${
+                  on ? 'bg-zinc-900 border-ring-red' : 'bg-zinc-900 border-zinc-800 hover:border-zinc-600'
+                }`}
+              >
+                <span className={`block font-display font-bold uppercase text-lg leading-none ${on ? 'text-white' : 'text-zinc-200'}`}>{p.label}</span>
+                <span className="block text-sm text-zinc-400 mt-1 tabular">{p.detail}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <section aria-labelledby="ajustes-title" className="border-t border-zinc-800">
+        <h2 id="ajustes-title" className="sr-only">Ajustar</h2>
+        <div className="divide-y divide-zinc-800">
           <Stepper
             label="Rounds"
             value={String(config.rounds)}
@@ -389,7 +415,7 @@ export const RoundTimerView: React.FC = () => {
             onPlus={() => setCfg({ rounds: Math.min(30, config.rounds + 1) })}
           />
           <Stepper
-            label="Duración round"
+            label="Duración del round"
             value={mmss(config.roundSec)}
             onMinus={() => setCfg({ roundSec: Math.max(10, config.roundSec - (config.roundSec > 60 ? 30 : 10)) })}
             onPlus={() => setCfg({ roundSec: Math.min(600, config.roundSec + (config.roundSec >= 60 ? 30 : 10)) })}
@@ -402,18 +428,22 @@ export const RoundTimerView: React.FC = () => {
           />
           <Stepper
             label="Aviso antes del final"
-            value={config.warnSec ? `${config.warnSec} s` : 'No'}
+            value={config.warnSec ? `${config.warnSec}s` : 'No'}
             onMinus={() => setCfg({ warnSec: Math.max(0, config.warnSec - 5) })}
             onPlus={() => setCfg({ warnSec: Math.min(30, config.warnSec + 5) })}
           />
         </div>
-        <button
-          onClick={() => { getCtx(); bell(1); }}
-          className="w-full text-xs font-semibold text-zinc-300 bg-zinc-950 border border-zinc-800 rounded-xl py-2 cursor-pointer"
-        >
-          🔔 Probar la campana
-        </button>
-      </div>
+      </section>
+
+      <button
+        onClick={() => { getCtx(); bell(1); }}
+        className="w-full h-12 text-sm font-semibold text-zinc-300 border border-zinc-800 rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:text-white"
+      >
+        <Bell className="w-4 h-4" /> Probar la campana
+      </button>
+      <p className="text-sm text-zinc-500 text-center">
+        Al empezar, la pantalla entera se vuelve el reloj: rojo en el round, verde en el descanso, ámbar en los últimos segundos.
+      </p>
     </div>
   );
 };

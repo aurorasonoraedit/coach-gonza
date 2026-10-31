@@ -1,16 +1,79 @@
 @import "tailwindcss";
 
+/*
+ * Mundo visual "rincón de box": negro real, un solo rojo, números de cartel de velada.
+ * La app usa las clases zinc/slate/green/amber de Tailwind; acá se re-afinan como tokens
+ * para que todo el código existente herede el negro, el contraste AA y la paleta acotada.
+ * Azul, celeste, violeta y fucsia se neutralizan: el color fuerte es solo el rojo,
+ * verde = pagado / descanso, ámbar = deuda / aviso.
+ */
+@theme {
+  --font-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, system-ui, sans-serif;
+
+  --color-ring-red: #e5202e;
+  --color-ring-red-deep: #b5111d;
+
+  /* Negros y grises del rincón (texto chico siempre ≥ 4.5:1 sobre los paneles) */
+  --color-zinc-950: #0b0b0c;
+  --color-zinc-900: #141415;
+  --color-zinc-800: #202022;
+  --color-zinc-700: #333336;
+  --color-zinc-600: #85858c;
+  --color-zinc-500: #a3a3aa;
+  --color-zinc-400: #bdbdc3;
+  --color-zinc-300: #d9d9de;
+  --color-slate-900: #0b0b0c;
+  --color-slate-950: #0b0b0c;
+
+  /* Botones de texto blanco con contraste AA */
+  --color-green-600: #15803d;
+  --color-green-500: #16a34a;
+  --color-amber-600: #b45309;
+  --color-amber-500: #d97706;
+
+  /* Acentos de plantilla neutralizados */
+  --color-blue-300: #d9d9de;
+  --color-blue-400: #bdbdc3;
+  --color-blue-500: #a3a3aa;
+  --color-blue-600: #333336;
+  --color-blue-800: #333336;
+  --color-blue-900: #202022;
+  --color-blue-950: #141415;
+  --color-sky-200: #d9d9de;
+  --color-sky-300: #d9d9de;
+  --color-sky-800: #333336;
+  --color-sky-900: #202022;
+  --color-sky-950: #141415;
+  --color-fuchsia-200: #d9d9de;
+  --color-fuchsia-900: #333336;
+  --color-fuchsia-950: #202022;
+  --color-purple-400: #bdbdc3;
+}
+
 /* ---- Ajustes para usar como app en el teléfono ---- */
 html, body {
+  background: #0b0b0c;
+  color: #f4f4f5;
   overscroll-behavior-y: none;
   -webkit-tap-highlight-color: transparent;
+  color-scheme: dark;
 }
+
+::selection { background: #e5202e; color: #fff; }
+input, textarea { caret-color: #e5202e; }
+:focus-visible { outline: 2px solid #e5202e; outline-offset: 2px; }
+* { scrollbar-color: #333336 transparent; scrollbar-width: thin; }
+
+/* Números de cartel: condensados y de ancho fijo para que no bailen */
+.font-display { font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.tabular { font-variant-numeric: tabular-nums; }
 
 /* Notch / barra de estado del iPhone */
 .safe-top { padding-top: max(0.75rem, env(safe-area-inset-top)); }
 /* Barra de gestos inferior del iPhone */
 .safe-bottom { padding-bottom: max(0.375rem, env(safe-area-inset-bottom)); }
-.pb-nav { padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
+.pb-nav { padding-bottom: calc(6.5rem + env(safe-area-inset-bottom)); }
 
 /* Safari hace zoom al tocar campos con letra menor a 16px: se evita en el celular */
 @media (max-width: 640px) {
@@ -19,3 +82,7 @@ html, body {
 
 .scrollbar-none { scrollbar-width: none; }
 .scrollbar-none::-webkit-scrollbar { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

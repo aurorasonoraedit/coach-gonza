@@ -28,7 +28,7 @@ export const PayMethodModal: React.FC = () => {
               {amount !== undefined && <span className="text-green-400 font-bold"> · {formatCurrency(amount, profile.currencySymbol)}</span>}
             </p>
           </div>
-          <button onClick={closePayPrompt} aria-label="Cerrar" className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 cursor-pointer">
+          <button onClick={closePayPrompt} aria-label="Cerrar" className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -39,7 +39,7 @@ export const PayMethodModal: React.FC = () => {
               onClick={() => confirmPayment(m.id)}
               className="w-full flex items-center gap-3 bg-zinc-800 hover:bg-zinc-700 active:scale-[0.99] border border-zinc-700 rounded-xl px-4 py-3.5 text-left cursor-pointer"
             >
-              <span className="text-2xl">{m.emoji}</span>
+              <m.icon className="w-6 h-6 text-zinc-300" />
               <span className="text-sm font-bold text-white">{m.label}</span>
             </button>
           ))}

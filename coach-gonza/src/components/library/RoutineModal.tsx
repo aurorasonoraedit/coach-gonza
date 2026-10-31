@@ -81,7 +81,7 @@ export const RoutineModal: React.FC<RoutineModalProps> = ({ routineToEdit, onClo
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -98,7 +98,7 @@ export const RoutineModal: React.FC<RoutineModalProps> = ({ routineToEdit, onClo
               placeholder="Ej. Combinaciones Pro de Manoplas"
               value={title}
               onChange={e => setTitle(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-ring-red"
             />
           </div>
 
@@ -108,7 +108,7 @@ export const RoutineModal: React.FC<RoutineModalProps> = ({ routineToEdit, onClo
               <select
                 value={level}
                 onChange={e => setLevel(e.target.value as ClientLevel)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
                 <option value="principiante">🌱 Principiante</option>
                 <option value="intermedio">⚡ Intermedio</option>
@@ -124,7 +124,7 @@ export const RoutineModal: React.FC<RoutineModalProps> = ({ routineToEdit, onClo
                 min="10"
                 value={durationMinutes}
                 onChange={e => setDurationMinutes(Number(e.target.value))}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
           </div>
@@ -143,7 +143,7 @@ export const RoutineModal: React.FC<RoutineModalProps> = ({ routineToEdit, onClo
               <button
                 type="button"
                 onClick={handleAddCombo}
-                className="bg-red-600 hover:bg-red-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer"
+                className="bg-ring-red hover:bg-ring-red-deep text-white font-bold px-3 py-2 min-h-11 rounded-lg text-xs cursor-pointer"
               >
                 + Añadir
               </button>
@@ -174,7 +174,7 @@ export const RoutineModal: React.FC<RoutineModalProps> = ({ routineToEdit, onClo
               <button
                 type="button"
                 onClick={handleAddDrill}
-                className="bg-red-600 hover:bg-red-500 text-white font-bold px-3 py-1.5 rounded-lg text-xs cursor-pointer"
+                className="bg-ring-red hover:bg-ring-red-deep text-white font-bold px-3 py-2 min-h-11 rounded-lg text-xs cursor-pointer"
               >
                 + Añadir
               </button>
@@ -198,13 +198,13 @@ export const RoutineModal: React.FC<RoutineModalProps> = ({ routineToEdit, onClo
               placeholder="Consejos de postura..."
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             ></textarea>
           </div>
 
           <button
             type="submit"
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-red-500/40"
+            className="w-full py-2.5 min-h-11 rounded-xl bg-zinc-900 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-ring-red/40"
           >
             {routineToEdit ? 'Guardar Cambios' : 'Crear Rutina'}
           </button>

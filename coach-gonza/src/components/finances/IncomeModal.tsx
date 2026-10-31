@@ -72,7 +72,7 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ incomeToEdit, onClose 
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -89,7 +89,7 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ incomeToEdit, onClose 
               placeholder="Ej. Paquete 8 Sesiones / Mensualidad / Venta Vendas"
               value={concept}
               onChange={e => setConcept(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-ring-red"
             />
           </div>
 
@@ -99,9 +99,9 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ incomeToEdit, onClose 
               <select
                 value={clientId}
                 onChange={e => handleClientSelect(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
-                <option value="">-- Nombre Personalizado --</option>
+                <option value="">Otro (escribí el nombre)</option>
                 {clients.map(c => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -117,7 +117,7 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ incomeToEdit, onClose 
                 placeholder="Nombre del pagador"
                 value={clientName}
                 onChange={e => setClientName(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
           </div>
@@ -131,7 +131,7 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ incomeToEdit, onClose 
                 min="1"
                 value={amount}
                 onChange={e => setAmount(Number(e.target.value))}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
 
@@ -142,7 +142,7 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ incomeToEdit, onClose 
                 required
                 value={date}
                 onChange={e => setDate(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
           </div>
@@ -153,10 +153,10 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ incomeToEdit, onClose 
               <select
                 value={paymentMethod}
                 onChange={e => setPaymentMethod(e.target.value as PaymentMethod)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
                 {PAYMENT_METHODS.map(m => (
-                    <option key={m.id} value={m.id}>{m.emoji} {m.label}</option>
+                    <option key={m.id} value={m.id}>{m.label}</option>
                   ))}
                 {!PAYMENT_METHODS.some(m => m.id === paymentMethod) && (
                   <option value={paymentMethod}>{paymentMethod}</option>
@@ -169,7 +169,7 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ incomeToEdit, onClose 
               <select
                 value={status}
                 onChange={e => setStatus(e.target.value as PaymentStatus)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
                 <option value="pagado">✓ Pagado</option>
                 <option value="pendiente">⏳ Pendiente</option>
@@ -184,13 +184,13 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ incomeToEdit, onClose 
               placeholder="Número de factura, comprobante..."
               value={notes}
               onChange={e => setNotes(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             ></textarea>
           </div>
 
           <button
             type="submit"
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-red-500/40"
+            className="w-full py-2.5 min-h-11 rounded-xl bg-zinc-900 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-ring-red/40"
           >
             {incomeToEdit ? 'Guardar Cambios' : 'Registrar Ingreso'}
           </button>

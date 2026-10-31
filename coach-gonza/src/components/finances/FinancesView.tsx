@@ -132,12 +132,11 @@ export const FinancesView: React.FC = () => {
     <div className="space-y-5 pt-1 max-w-7xl mx-auto">
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-lg">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
         <div>
-          <h1 className="text-xl font-black text-white tracking-tight flex items-center gap-2">
-            <DollarSign className="w-5 h-5 text-green-500" /> Ingresos y Gastos
+          <h1 className="font-display font-extrabold uppercase text-3xl tracking-tight leading-none">Plata
           </h1>
-          <p className="text-xs text-zinc-400 mt-0.5">
+          <p className="text-sm text-zinc-400 mt-1.5">
             Lo que cobrás, lo que gastás y lo que te queda de ganancia.
           </p>
         </div>
@@ -145,7 +144,7 @@ export const FinancesView: React.FC = () => {
         <div className="flex items-center space-x-2">
           <button
             onClick={() => exportIncomesToCSV(incomes)}
-            className="p-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-all border border-zinc-700 cursor-pointer text-xs font-semibold flex items-center space-x-1"
+            className="min-w-11 min-h-11 inline-flex items-center justify-center rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-all border border-zinc-700 cursor-pointer text-xs font-semibold flex items-center space-x-1"
             title="Exportar a CSV"
           >
             <Download className="w-4 h-4 text-blue-400" />
@@ -157,10 +156,10 @@ export const FinancesView: React.FC = () => {
               setExpenseToEdit(null);
               setExpenseModalOpen(true);
             }}
-            className="bg-zinc-800 hover:bg-zinc-700 text-red-300 text-xs font-bold px-3 py-2.5 rounded-xl flex items-center space-x-1 transition-all cursor-pointer border border-red-900/60"
+            className="bg-zinc-800 hover:bg-zinc-700 text-red-300 text-xs font-bold px-3 py-2.5 min-h-11 rounded-xl flex items-center space-x-1 transition-all cursor-pointer border border-red-900/60"
           >
             <Receipt className="w-4 h-4" />
-            <span>+ Gasto</span>
+            <span>Gasto</span>
           </button>
 
           <button
@@ -168,59 +167,52 @@ export const FinancesView: React.FC = () => {
               setIncomeToEdit(null);
               setModalOpen(true);
             }}
-            className="bg-green-600 hover:bg-green-500 text-white text-xs font-bold px-3 py-2.5 rounded-xl flex items-center space-x-1 shadow-lg transition-all cursor-pointer border border-green-500/40"
+            className="bg-ring-red hover:bg-ring-red-deep text-white text-sm font-bold px-3 py-2.5 min-h-11 rounded-xl flex items-center space-x-1 transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>+ Ingreso</span>
+            <span>Ingreso</span>
           </button>
         </div>
       </div>
 
-      {/* Top Cards Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-md">
-          <span className="text-zinc-400 text-xs font-medium block">Cobrado hoy</span>
-          <p className="text-xl font-black text-white mt-1">{fmt(todayPaid)}</p>
-          <span className="text-[10px] text-zinc-500">{formatShortDate(todayStr)}</span>
+      {/* Resumen del mes: una tira con filetes, el número grande es lo que queda */}
+      <section aria-label={`Resumen de ${monthName}`} className="border-y border-zinc-800">
+        <div className="py-4">
+          <span className="text-sm text-zinc-400">Te quedó en {monthName}</span>
+          <p className={`font-display font-extrabold text-[52px] leading-none tabular mt-1 ${monthNet >= 0 ? 'text-white' : 'text-ring-red'}`}>{fmt(monthNet)}</p>
+          <span className="text-[13px] text-zinc-500">Cobrado − gastos</span>
         </div>
-
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-md">
-          <span className="text-zinc-400 text-xs font-medium block">Cobrado en {monthName}</span>
-          <p className="text-xl font-black text-green-400 mt-1">{fmt(monthPaid)}</p>
-          <span className="text-[10px] text-zinc-500">Ingresos del mes</span>
+        <div className="grid grid-cols-3 border-t border-zinc-800 divide-x divide-zinc-800">
+          <div className="py-3 pr-3">
+            <span className="text-[13px] text-zinc-400 block">Cobrado</span>
+            <p className="font-display font-bold text-[24px] leading-tight tabular">{fmt(monthPaid)}</p>
+          </div>
+          <div className="py-3 px-3">
+            <span className="text-[13px] text-zinc-400 block">Gastos</span>
+            <p className="font-display font-bold text-[24px] leading-tight tabular text-zinc-300">{fmt(monthExpenses)}</p>
+          </div>
+          <div className="py-3 pl-3">
+            <span className="text-[13px] text-zinc-400 block">Hoy</span>
+            <p className="font-display font-bold text-[24px] leading-tight tabular">{fmt(todayPaid)}</p>
+          </div>
         </div>
-
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-md">
-          <span className="text-zinc-400 text-xs font-medium block">Gastos de {monthName}</span>
-          <p className="text-xl font-black text-red-400 mt-1">{fmt(monthExpenses)}</p>
-          <span className="text-[10px] text-zinc-500">{monthExpensesList.length} gasto(s)</span>
-        </div>
-
-        <div className={`rounded-2xl p-4 shadow-md border ${monthNet >= 0 ? 'bg-emerald-950/40 border-emerald-800/60' : 'bg-red-950/40 border-red-800/60'}`}>
-          <span className="text-zinc-300 text-xs font-semibold flex items-center gap-1">
-            <Wallet className="w-3.5 h-3.5" /> Ganancia de {monthName}
-          </span>
-          <p className={`text-xl font-black mt-1 ${monthNet >= 0 ? 'text-emerald-300' : 'text-red-300'}`}>{fmt(monthNet)}</p>
-          <span className="text-[10px] text-zinc-400">Cobrado − gastos</span>
-        </div>
-
         <button
           onClick={() => setActiveTab('pendiente')}
-          className="col-span-2 lg:col-span-4 text-left bg-zinc-900 border border-amber-900/40 rounded-2xl p-4 shadow-md flex items-center justify-between cursor-pointer hover:border-amber-700/60"
+          className="w-full text-left border-t border-zinc-800 py-3 min-h-14 flex items-center justify-between cursor-pointer"
         >
-          <div>
-            <span className="text-zinc-400 text-xs font-medium block">Por cobrar</span>
-            <p className="text-xl font-black text-amber-400 mt-0.5">{fmt(totalPending)}</p>
-          </div>
-          <span className="text-[11px] text-amber-400/90 font-semibold">{pendingList.length} pendiente(s) · Ver ›</span>
+          <span>
+            <span className="text-[13px] text-zinc-400 block">Te deben</span>
+            <span className="font-display font-bold text-[24px] leading-tight tabular text-amber-500">{fmt(totalPending)}</span>
+          </span>
+          <span className="text-sm text-zinc-300 font-semibold">{pendingList.length === 1 ? '1 pendiente' : `${pendingList.length} pendientes`} ›</span>
         </button>
-      </div>
+      </section>
 
       {/* Recharts Analytics Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Income Bar Chart */}
-        <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-xl space-y-3">
+        <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
           <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
               <BarChart2 className="w-4 h-4 text-green-400" /> Evolución de Recaudación ($)
@@ -247,7 +239,7 @@ export const FinancesView: React.FC = () => {
         </div>
 
         {/* Methods Pie Chart */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-xl space-y-3">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
           <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
               <PieChartIcon className="w-4 h-4 text-blue-400" /> Por Método de Pago
@@ -278,22 +270,22 @@ export const FinancesView: React.FC = () => {
       </div>
 
       {/* Income Records List */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4 shadow-xl">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-4">
         
         {/* Table Tabs */}
         <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
           <div className="flex items-center gap-2 text-xs font-bold overflow-x-auto scrollbar-none">
             <button
               onClick={() => setActiveTab('all')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
-                activeTab === 'all' ? 'bg-red-600 text-white shadow' : 'bg-zinc-800 text-zinc-400 hover:text-white'
+              className={`px-3 py-2 min-h-11 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                activeTab === 'all' ? 'bg-ring-red text-white' : 'bg-zinc-800 text-zinc-400 hover:text-white'
               }`}
             >
               Todos ({incomes.length})
             </button>
             <button
               onClick={() => setActiveTab('pagado')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-2 min-h-11 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'pagado' ? 'bg-green-600 text-white shadow' : 'bg-zinc-800 text-zinc-400 hover:text-white'
               }`}
             >
@@ -301,7 +293,7 @@ export const FinancesView: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('pendiente')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-2 min-h-11 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === 'pendiente' ? 'bg-amber-600 text-white shadow' : 'bg-zinc-800 text-zinc-400 hover:text-white'
               }`}
             >
@@ -309,8 +301,8 @@ export const FinancesView: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveTab('gastos')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
-                activeTab === 'gastos' ? 'bg-red-700 text-white shadow' : 'bg-zinc-800 text-zinc-400 hover:text-white'
+              className={`px-3 py-2 min-h-11 rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                activeTab === 'gastos' ? 'bg-ring-red text-white' : 'bg-zinc-800 text-zinc-400 hover:text-white'
               }`}
             >
               Gastos ({expenses.length})
@@ -326,7 +318,7 @@ export const FinancesView: React.FC = () => {
               <div className="flex justify-end">
                 <button
                   onClick={() => exportExpensesToCSV(expenses)}
-                  className="text-[11px] font-semibold px-2.5 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 flex items-center gap-1 cursor-pointer"
+                  className="text-[12.5px] font-semibold px-2.5 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 flex items-center gap-1 cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5 text-blue-400" /> Exportar gastos
                 </button>
@@ -334,15 +326,15 @@ export const FinancesView: React.FC = () => {
             )}
             {expenseByCategory.length > 0 && (
               <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-3 space-y-2">
-                <p className="text-[11px] font-bold text-zinc-300 uppercase tracking-wider">En qué se fue la plata en {monthName}</p>
+                <p className="text-[12.5px] font-bold text-zinc-300 uppercase tracking-wider">En qué se fue la plata en {monthName}</p>
                 {expenseByCategory.map(c => (
-                  <div key={c.id} className="text-[11px]">
+                  <div key={c.id} className="text-[12.5px]">
                     <div className="flex justify-between text-zinc-300">
-                      <span>{c.emoji} {c.label}</span>
+                      <span className="flex items-center gap-1.5"><c.icon className="w-4 h-4 text-zinc-400" /> {c.label}</span>
                       <span className="font-bold text-white">{fmt(c.total)}</span>
                     </div>
                     <div className="h-1.5 bg-zinc-800 rounded-full mt-1 overflow-hidden">
-                      <div className="h-full bg-red-500 rounded-full" style={{ width: `${(c.total / monthExpenses) * 100}%` }} />
+                      <div className="h-full bg-zinc-400 rounded-full" style={{ width: `${(c.total / monthExpenses) * 100}%` }} />
                     </div>
                   </div>
                 ))}
@@ -353,7 +345,7 @@ export const FinancesView: React.FC = () => {
                 <p className="text-xs text-zinc-500 italic">Todavía no cargaste gastos.</p>
                 <button
                   onClick={() => { setExpenseToEdit(null); setExpenseModalOpen(true); }}
-                  className="bg-red-600 hover:bg-red-500 text-white text-xs font-bold px-4 py-2 rounded-xl cursor-pointer"
+                  className="bg-ring-red hover:bg-ring-red-deep text-white text-xs font-bold px-4 py-2 min-h-11 rounded-xl cursor-pointer"
                 >
                   + Registrar el primero
                 </button>
@@ -364,25 +356,25 @@ export const FinancesView: React.FC = () => {
                 return (
                   <div key={exp.id} className="bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 flex items-center justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className="p-2 rounded-xl bg-red-950/60 border border-red-900/60 text-sm shrink-0">{cat.emoji}</div>
+                      <div className="w-11 h-11 inline-flex items-center justify-center rounded-xl bg-zinc-800 shrink-0"><cat.icon className="w-5 h-5 text-zinc-300" /></div>
                       <div className="min-w-0">
                         <h4 className="font-bold text-white text-xs truncate">{exp.concept}</h4>
-                        <p className="text-[11px] text-zinc-400 mt-0.5">{cat.label} • {formatShortDate(exp.date)}</p>
-                        {exp.notes && <p className="text-[10px] text-zinc-500 italic mt-0.5 truncate">{exp.notes}</p>}
+                        <p className="text-[12.5px] text-zinc-400 mt-0.5">{cat.label} • {formatShortDate(exp.date)}</p>
+                        {exp.notes && <p className="text-xs text-zinc-500 italic mt-0.5 truncate">{exp.notes}</p>}
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
-                      <span className="text-sm font-black text-red-400 mr-1">−{fmt(exp.amount)}</span>
+                      <span className="text-sm font-black text-zinc-200 mr-1">−{fmt(exp.amount)}</span>
                       <button
                         onClick={() => { setExpenseToEdit(exp); setExpenseModalOpen(true); }}
-                        className="p-1.5 rounded-lg bg-zinc-800 border border-zinc-700 cursor-pointer"
+                        className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 border border-zinc-700 cursor-pointer"
                         title="Editar"
                       >
                         <Edit3 className="w-3.5 h-3.5 text-blue-400" />
                       </button>
                       <button
                         onClick={async () => { if (await askConfirm('¿Eliminar este gasto?', { okLabel: 'Eliminar' })) deleteExpense(exp.id); }}
-                        className="p-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-red-300 cursor-pointer"
+                        className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-400 hover:text-red-300 cursor-pointer"
                         title="Eliminar"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -415,15 +407,15 @@ export const FinancesView: React.FC = () => {
                     <div>
                       <div className="flex items-center space-x-2">
                         <h4 className="font-bold text-white text-xs">{inc.concept}</h4>
-                        <span className="text-[10px] text-zinc-400 font-semibold bg-zinc-800 px-1.5 py-0.2 rounded uppercase">
+                        <span className="text-xs text-zinc-400 font-semibold bg-zinc-800 px-1.5 py-0.2 rounded uppercase">
                           {paymentLabel(inc.paymentMethod)}
                         </span>
                       </div>
-                      <p className="text-[11px] text-zinc-400 mt-0.5">
+                      <p className="text-[12.5px] text-zinc-400 mt-0.5">
                         <span className="font-semibold text-zinc-200">{inc.clientName}</span> • {formatShortDate(inc.date)}
                       </p>
                       {inc.notes && (
-                        <p className="text-[10px] text-zinc-500 italic mt-0.5">{inc.notes}</p>
+                        <p className="text-xs text-zinc-500 italic mt-0.5">{inc.notes}</p>
                       )}
                     </div>
                   </div>
@@ -440,14 +432,14 @@ export const FinancesView: React.FC = () => {
                             href={reminderLink(inc)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800 hover:bg-emerald-900 transition-colors text-[10px] font-bold"
+                            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-950 text-emerald-300 border border-emerald-800 hover:bg-emerald-900 transition-colors text-xs font-bold"
                             title={client?.whatsapp || client?.phone ? 'Mandar recordatorio de pago por WhatsApp' : 'Sin número cargado: elegís el contacto en WhatsApp'}
                           >
                             <MessageCircle className="w-3.5 h-3.5" /> Cobrar
                           </a>
                           <button
                             onClick={() => handleMarkPaid(inc.id)}
-                            className="bg-green-600 hover:bg-green-500 text-white font-bold text-[10px] px-2 py-1 rounded-lg cursor-pointer"
+                            className="bg-green-600 hover:bg-green-500 text-white font-bold text-xs px-2 py-1 rounded-lg cursor-pointer"
                           >
                             Marcar Pagado
                           </button>
@@ -459,7 +451,7 @@ export const FinancesView: React.FC = () => {
                           setIncomeToEdit(inc);
                           setModalOpen(true);
                         }}
-                        className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors cursor-pointer border border-zinc-700"
+                        className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors cursor-pointer border border-zinc-700"
                         title="Editar"
                       >
                         <Edit3 className="w-3.5 h-3.5 text-blue-400" />
@@ -467,7 +459,7 @@ export const FinancesView: React.FC = () => {
 
                       <button
                         onClick={() => handleDelete(inc.id)}
-                        className="p-1.5 rounded-lg bg-zinc-800 hover:bg-red-900 text-zinc-400 hover:text-red-300 transition-colors cursor-pointer border border-zinc-700"
+                        className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 hover:bg-red-900 text-zinc-400 hover:text-red-300 transition-colors cursor-pointer border border-zinc-700"
                         title="Eliminar"
                       >
                         <Trash2 className="w-3.5 h-3.5" />

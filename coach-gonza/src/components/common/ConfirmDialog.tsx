@@ -17,7 +17,7 @@ export const ConfirmDialog: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => close(false)}>
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => close(false)}>
       <div
         role="alertdialog"
         aria-modal="true"
@@ -35,7 +35,7 @@ export const ConfirmDialog: React.FC = () => {
           <button
             onClick={() => close(true)}
             className={`py-3 rounded-xl text-white text-sm font-bold cursor-pointer ${
-              req.danger ? 'bg-red-600 hover:bg-red-500' : 'bg-green-600 hover:bg-green-500'
+              req.danger ? 'bg-ring-red hover:bg-ring-red-deep' : 'bg-green-600 hover:bg-green-500'
             }`}
           >
             {req.okLabel}

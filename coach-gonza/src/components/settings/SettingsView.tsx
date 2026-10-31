@@ -1,7 +1,7 @@
 import { askConfirm } from '../../utils/confirm';
 import React, { useRef, useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Settings, Save, RotateCcw, Download, Upload, Trash2, Moon, Sun } from 'lucide-react';
+import { Settings, Save, RotateCcw, Download, Upload, Trash2 } from 'lucide-react';
 import { exportSessionsToCSV, exportIncomesToCSV, exportClientsToCSV } from '../../utils/exportUtils';
 
 export const SettingsView: React.FC = () => {
@@ -11,8 +11,6 @@ export const SettingsView: React.FC = () => {
     sessions,
     incomes,
     clients,
-    theme,
-    toggleTheme,
     resetToInitialData,
     clearAllData,
     restoreBackup,
@@ -91,19 +89,18 @@ export const SettingsView: React.FC = () => {
     <div className="space-y-6">
       
       {/* Header */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 shadow-lg">
-        <h2 className="text-base font-black text-white tracking-tight flex items-center gap-2">
-          <Settings className="w-5 h-5 text-red-500" /> Configuración & Respaldo
+      <div className="">
+        <h2 className="font-display font-extrabold uppercase text-3xl tracking-tight leading-none">Configuración & Respaldo
         </h2>
-        <p className="text-xs text-zinc-400 mt-0.5">
-          Personaliza tu perfil de entrenador, moneda local y exporta tus datos.
+        <p className="text-sm text-zinc-400 mt-1.5">
+          Tu perfil, tus datos y la copia de seguridad.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Profile Form (2 Cols) */}
-        <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-5 shadow-xl space-y-4">
+        <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-5 space-y-4">
           <h3 className="text-sm font-extrabold text-white">Perfil del Entrenador</h3>
 
           <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
@@ -114,7 +111,7 @@ export const SettingsView: React.FC = () => {
                 placeholder="Ej. Gonza, Palma, Profe…"
                 value={nickname}
                 onChange={e => setNickname(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
 
@@ -126,7 +123,7 @@ export const SettingsView: React.FC = () => {
                   required
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
                 />
               </div>
               <div>
@@ -136,7 +133,7 @@ export const SettingsView: React.FC = () => {
                   placeholder="@palma_gon"
                   value={handle}
                   onChange={e => setHandle(e.target.value)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500 text-red-400 font-medium"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red text-red-400 font-medium"
                 />
               </div>
             </div>
@@ -149,7 +146,7 @@ export const SettingsView: React.FC = () => {
                   required
                   value={gymName}
                   onChange={e => setGymName(e.target.value)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
                 />
               </div>
               <div>
@@ -159,7 +156,7 @@ export const SettingsView: React.FC = () => {
                   placeholder="Dejar vacío si trabajás solo"
                   value={coTrainer}
                   onChange={e => setCoTrainer(e.target.value)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
                 />
               </div>
             </div>
@@ -171,7 +168,7 @@ export const SettingsView: React.FC = () => {
                 placeholder="Reforzando la muralla: Disciplina, Sparring..."
                 value={philosophy}
                 onChange={e => setPhilosophy(e.target.value)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
 
@@ -182,7 +179,7 @@ export const SettingsView: React.FC = () => {
                   type="text"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
                 />
               </div>
               <div>
@@ -191,7 +188,7 @@ export const SettingsView: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
                 />
               </div>
             </div>
@@ -202,7 +199,7 @@ export const SettingsView: React.FC = () => {
                 <select
                   value={currencySymbol}
                   onChange={e => setCurrencySymbol(e.target.value)}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
                 >
                   <option value="$">$ (USD / MXN / COP / ARS / CLP)</option>
                   <option value="€">€ (Euro)</option>
@@ -219,14 +216,14 @@ export const SettingsView: React.FC = () => {
                   max="180"
                   value={defaultSessionDurationMinutes}
                   onChange={e => setDefaultSessionDurationMinutes(Number(e.target.value))}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="bg-red-600 hover:bg-red-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl flex items-center space-x-1.5 shadow-lg transition-all cursor-pointer"
+              className="bg-ring-red hover:bg-ring-red-deep text-white font-bold text-xs px-5 py-2.5 min-h-11 rounded-xl flex items-center space-x-1.5 transition-all cursor-pointer"
             >
               <Save className="w-4 h-4" />
               <span>Guardar Perfil</span>
@@ -237,39 +234,17 @@ export const SettingsView: React.FC = () => {
         {/* Preferences & Backup (1 Col) */}
         <div className="space-y-4">
           
-          {/* Theme */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3 shadow-xl">
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider">Apariencia</h3>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-zinc-300 font-medium">Modo Visual</span>
-              <button
-                onClick={toggleTheme}
-                className="bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl flex items-center space-x-1.5 cursor-pointer"
-              >
-                {theme === 'dark' ? (
-                  <>
-                    <Sun className="w-4 h-4 text-amber-400" /> <span>Modo Claro</span>
-                  </>
-                ) : (
-                  <>
-                    <Moon className="w-4 h-4 text-zinc-300" /> <span>Modo Oscuro</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-
           {/* Export & Data Backup */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3 shadow-xl">
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-4 space-y-3">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider">Respaldo de Datos</h3>
-            <p className="text-[11px] text-zinc-400">
-              Descarga una copia completa de tu agenda, clientes e ingresos para no perder información.
+            <p className="text-[12.5px] text-zinc-400">
+              Guardá una copia completa de tu agenda, alumnos e ingresos para no perder nada.
             </p>
 
             <div className="space-y-2">
               <button
                 onClick={handleBackupExportJSON}
-                className="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer"
+                className="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white text-xs font-bold py-2.5 min-h-11 rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer"
               >
                 <Download className="w-4 h-4 text-blue-400" />
                 <span>Guardar copia de seguridad</span>
@@ -277,7 +252,7 @@ export const SettingsView: React.FC = () => {
 
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer"
+                className="w-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white text-xs font-bold py-2.5 min-h-11 rounded-xl flex items-center justify-center space-x-1.5 cursor-pointer"
               >
                 <Upload className="w-4 h-4 text-green-400" />
                 <span>Restaurar desde una copia</span>
@@ -293,33 +268,33 @@ export const SettingsView: React.FC = () => {
               <div className="grid grid-cols-3 gap-2">
                 <button
                   onClick={() => exportSessionsToCSV(sessions)}
-                  className="bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[11px] font-semibold py-1.5 rounded-lg text-center cursor-pointer"
+                  className="bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[12.5px] font-semibold py-1.5 rounded-lg text-center cursor-pointer"
                 >
                   CSV Turnos
                 </button>
                 <button
                   onClick={() => exportIncomesToCSV(incomes)}
-                  className="bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[11px] font-semibold py-1.5 rounded-lg text-center cursor-pointer"
+                  className="bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[12.5px] font-semibold py-1.5 rounded-lg text-center cursor-pointer"
                 >
                   CSV Ingresos
                 </button>
                 <button
                   onClick={() => exportClientsToCSV(clients)}
-                  className="bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[11px] font-semibold py-1.5 rounded-lg text-center cursor-pointer"
+                  className="bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 text-[12.5px] font-semibold py-1.5 rounded-lg text-center cursor-pointer"
                 >
-                  CSV Clientes
+                  CSV Alumnos
                 </button>
               </div>
-              <p className="text-[10px] text-zinc-500 leading-snug">
+              <p className="text-xs text-zinc-500 leading-snug">
                 Los datos se guardan solo en este teléfono. Hacé una copia cada tanto y guardala en WhatsApp, Drive o Archivos.
               </p>
             </div>
           </div>
 
           {/* Datos de la app */}
-          <div className="bg-zinc-900 border border-red-900/40 rounded-2xl p-4 space-y-3 shadow-xl">
+          <div className="bg-zinc-900 border border-red-900/40 rounded-2xl p-4 space-y-3">
             <h3 className="text-xs font-bold text-red-400 uppercase tracking-wider">Datos de la aplicación</h3>
-            <p className="text-[11px] text-zinc-400">
+            <p className="text-[12.5px] text-zinc-400">
               Probá la app con datos de ejemplo o borrá todo para empezar de cero. Los paquetes y las rutinas se conservan.
             </p>
             <button

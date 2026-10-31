@@ -1,124 +1,98 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Bell, Sun, Moon, Plus, Dumbbell, ShieldAlert, Check } from 'lucide-react';
+import { Bell, Check, LayoutGrid } from 'lucide-react';
 import { formatShortDate } from '../../utils/dateUtils';
 
+const MORE_TABS = ['more', 'news', 'packages', 'events', 'library', 'settings'];
+
 export const Header: React.FC = () => {
-  const { profile, theme, toggleTheme, reminders, openQuickAdd, toggleReminder } = useApp();
+  const { profile, reminders, toggleReminder, activeTab, setActiveTab } = useApp();
   const [showNotifications, setShowNotifications] = useState(false);
 
   const pendingReminders = reminders.filter(r => !r.isCompleted);
+  const onMore = MORE_TABS.includes(activeTab);
 
   return (
-    <header className="sticky top-0 z-40 bg-slate-900/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-red-900/40 text-white px-4 pb-3 safe-top">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        
-        {/* Brand & Trainer Identity */}
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-red-650 via-red-600 to-amber-500 flex items-center justify-center shadow-lg shadow-red-950/50 border border-red-500/30">
-            <Dumbbell className="w-5 h-5 text-white transform -rotate-45" />
+    <header className="sticky top-0 z-40 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800 text-white px-4 pb-2.5 safe-top">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+        <button
+          onClick={() => setActiveTab('dashboard')}
+          className="flex items-center gap-2.5 min-w-0 cursor-pointer"
+          aria-label="Ir al inicio"
+        >
+          <img src="./icon-192.png" alt="" width={40} height={40} className="w-10 h-10 rounded-xl shrink-0" />
+          <div className="min-w-0 text-left">
+            <span className="block font-display font-extrabold uppercase text-[22px] leading-none tracking-tight">
+              Coach <span className="text-ring-red">Gonza</span>
+            </span>
+            <span className="block text-xs text-zinc-500 font-medium truncate mt-0.5">{profile.gymName}</span>
           </div>
-          <div>
-            <div className="flex items-center space-x-2">
-              <h1 className="font-extrabold text-lg tracking-tight text-white leading-none">
-                Coach <span className="text-red-500">Gonza</span>
-              </h1>
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-red-950 text-red-400 border border-red-800/60 px-1.5 py-0.5 rounded">
-                PRO
-              </span>
-            </div>
-            <p className="text-[10px] sm:text-xs text-zinc-400 font-semibold tracking-wide truncate max-w-[200px] sm:max-w-xs mt-0.5 uppercase">
-              {profile.gymName}
-            </p>
-          </div>
-        </div>
+        </button>
 
-        {/* Action Controls */}
-        <div className="flex items-center space-x-2">
-          
-          {/* Quick Create Button */}
-          <button
-            onClick={() => openQuickAdd()}
-            id="header-quick-add-btn"
-            className="flex items-center space-x-1.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-md transition-all active:scale-95 cursor-pointer border border-red-500/30"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">Nuevo</span>
-          </button>
-
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            id="header-theme-toggle-btn"
-            className="p-2 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors cursor-pointer border border-zinc-700/50"
-            title={theme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-          >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-zinc-300" />}
-          </button>
-
-          {/* Notifications Dropdown */}
+        <div className="flex items-center gap-1.5">
           <div className="relative">
             <button
               onClick={() => setShowNotifications(!showNotifications)}
               id="header-notifications-btn"
-              className="p-2 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors cursor-pointer border border-zinc-700/50 relative"
-              title="Recordatorios y Notificaciones"
+              aria-label={`Recordatorios: ${pendingReminders.length} pendientes`}
+              aria-expanded={showNotifications}
+              className="w-11 h-11 rounded-xl text-zinc-300 hover:text-white hover:bg-zinc-800 flex items-center justify-center relative cursor-pointer"
             >
-              <Bell className="w-4 h-4" />
+              <Bell className="w-5 h-5" />
               {pendingReminders.length > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                <span className="absolute top-1.5 right-1.5 min-w-[18px] h-[18px] px-1 bg-ring-red text-white text-[11px] font-bold rounded-full flex items-center justify-center tabular">
                   {pendingReminders.length}
                 </span>
               )}
             </button>
 
-            {/* Notifications Popover */}
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 bg-zinc-900 border border-zinc-700/80 rounded-xl shadow-2xl p-3 z-50 text-xs">
+              <div className="absolute right-0 mt-2 w-[min(20rem,calc(100vw-2rem))] bg-zinc-900 border border-zinc-700 rounded-2xl shadow-[0_12px_32px_rgba(0,0,0,0.6)] p-3 z-50 text-sm">
                 <div className="flex items-center justify-between border-b border-zinc-800 pb-2 mb-2">
-                  <span className="font-bold text-white flex items-center gap-1.5">
-                    <ShieldAlert className="w-4 h-4 text-red-500" /> Recordatorios Pendientes
-                  </span>
-                  <span className="text-[10px] text-zinc-400 bg-zinc-800 px-1.5 py-0.5 rounded">
-                    {pendingReminders.length}
-                  </span>
+                  <span className="font-display font-bold uppercase text-base tracking-wide">Recordatorios</span>
+                  <span className="text-xs text-zinc-400 tabular">{pendingReminders.length} pendientes</span>
                 </div>
 
                 {pendingReminders.length === 0 ? (
-                  <p className="text-zinc-400 py-3 text-center italic">No tienes recordatorios pendientes</p>
+                  <p className="text-zinc-400 py-3 text-center">No tenés recordatorios pendientes</p>
                 ) : (
-                  <div className="max-h-64 overflow-y-auto space-y-2">
+                  <ul className="max-h-72 overflow-y-auto divide-y divide-zinc-800">
                     {pendingReminders.map(rem => (
-                      <div
-                        key={rem.id}
-                        className="bg-zinc-800/70 border border-zinc-700/50 rounded-lg p-2.5 flex items-start justify-between gap-2"
-                      >
+                      <li key={rem.id} className="py-2 flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-white truncate">{rem.title}</p>
-                          {rem.description && (
-                            <p className="text-zinc-400 text-[11px] line-clamp-2 mt-0.5">{rem.description}</p>
-                          )}
-                          <p className="text-[10px] text-red-400 font-medium mt-1">
-                            📅 {formatShortDate(rem.dueDate)} {rem.dueTime ? `• ${rem.dueTime}` : ''}
+                          <p className="font-semibold text-white">{rem.title}</p>
+                          {rem.description && <p className="text-zinc-400 text-[13px] mt-0.5 line-clamp-2">{rem.description}</p>}
+                          <p className="text-xs text-zinc-400 mt-1 tabular">
+                            {formatShortDate(rem.dueDate)} {rem.dueTime ? `· ${rem.dueTime}` : ''}
                           </p>
                         </div>
                         <button
                           onClick={() => toggleReminder(rem.id)}
-                          className="p-1 rounded bg-zinc-700 hover:bg-green-600 text-zinc-300 hover:text-white transition-colors cursor-pointer"
-                          title="Marcar como listo"
+                          aria-label={`Marcar como hecho: ${rem.title}`}
+                          className="w-11 h-11 shrink-0 rounded-xl bg-zinc-800 hover:bg-green-600 text-zinc-300 hover:text-white flex items-center justify-center cursor-pointer"
                         >
-                          <Check className="w-3.5 h-3.5" />
+                          <Check className="w-4 h-4" />
                         </button>
-                      </div>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 )}
               </div>
             )}
           </div>
 
+          <button
+            onClick={() => setActiveTab('more')}
+            aria-label="Más secciones: noticias, peleas, paquetes, rutinas y ajustes"
+            aria-current={onMore ? 'page' : undefined}
+            className={`h-11 px-3 rounded-xl flex items-center gap-1.5 text-sm font-semibold cursor-pointer ${
+              onMore ? 'bg-zinc-800 text-white' : 'text-zinc-300 hover:text-white hover:bg-zinc-800'
+            }`}
+          >
+            <LayoutGrid className="w-5 h-5" />
+            <span>Más</span>
+          </button>
         </div>
-
       </div>
     </header>
   );

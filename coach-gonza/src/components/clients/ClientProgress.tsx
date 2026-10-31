@@ -28,7 +28,7 @@ const WEIGHT_CLASSES = [
 
 const kg = (n: number) => `${n.toLocaleString('es-AR', { maximumFractionDigits: 1 })} kg`;
 const inputCls =
-  'w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500';
+  'w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red';
 
 export const ClientProgress: React.FC<{ client: Client }> = ({ client: initialClient }) => {
   const { clients, progress, addProgress, deleteProgress, updateClient } = useApp();
@@ -88,7 +88,7 @@ export const ClientProgress: React.FC<{ client: Client }> = ({ client: initialCl
         </p>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-[10px] text-zinc-400 mb-1">Peso objetivo (kg)</label>
+            <label className="block text-xs text-zinc-400 mb-1">Peso objetivo (kg)</label>
             <input
               inputMode="decimal"
               placeholder="Ej. 69,5"
@@ -98,7 +98,7 @@ export const ClientProgress: React.FC<{ client: Client }> = ({ client: initialCl
             />
           </div>
           <div>
-            <label className="block text-[10px] text-zinc-400 mb-1">Categoría</label>
+            <label className="block text-xs text-zinc-400 mb-1">Categoría</label>
             <input
               list="weight-classes"
               placeholder="Ej. Superwelter"
@@ -125,11 +125,11 @@ export const ClientProgress: React.FC<{ client: Client }> = ({ client: initialCl
       {last !== undefined && (
         <div className="grid grid-cols-3 gap-2">
           <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5">
-            <span className="text-zinc-500 block text-[10px]">Último peso</span>
+            <span className="text-zinc-500 block text-xs">Último peso</span>
             <span className="font-black text-white text-sm">{kg(last)}</span>
           </div>
           <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5">
-            <span className="text-zinc-500 block text-[10px]">Desde el inicio</span>
+            <span className="text-zinc-500 block text-xs">Desde el inicio</span>
             <span
               className={`font-black text-sm flex items-center gap-0.5 ${
                 !change ? 'text-zinc-300' : change < 0 ? 'text-emerald-400' : 'text-amber-400'
@@ -148,7 +148,7 @@ export const ClientProgress: React.FC<{ client: Client }> = ({ client: initialCl
                 : 'bg-amber-950/40 border-amber-800/60'
             }`}
           >
-            <span className="text-zinc-400 block text-[10px]">Para el objetivo</span>
+            <span className="text-zinc-400 block text-xs">Para el objetivo</span>
             <span className="font-black text-sm text-white">
               {toTarget === undefined ? '—' : toTarget <= 0 ? '✓ En peso' : `Faltan ${kg(toTarget)}`}
             </span>
@@ -205,7 +205,7 @@ export const ClientProgress: React.FC<{ client: Client }> = ({ client: initialCl
         />
         <button
           type="submit"
-          className="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-lg flex items-center justify-center gap-1 cursor-pointer"
+          className="w-full bg-ring-red hover:bg-ring-red-deep text-white font-bold py-2 rounded-lg flex items-center justify-center gap-1 cursor-pointer"
         >
           <Plus className="w-4 h-4" /> Guardar registro
         </button>
@@ -222,12 +222,12 @@ export const ClientProgress: React.FC<{ client: Client }> = ({ client: initialCl
             return (
               <div key={e.id} className="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="text-zinc-400 text-[11px]">{formatShortDate(e.date)}</p>
+                  <p className="text-zinc-400 text-[12.5px]">{formatShortDate(e.date)}</p>
                   {e.weight !== undefined && (
                     <p className="font-black text-white">
                       {kg(e.weight)}
                       {diff !== undefined && diff !== 0 && (
-                        <span className={`ml-1.5 text-[10px] font-bold ${diff < 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
+                        <span className={`ml-1.5 text-xs font-bold ${diff < 0 ? 'text-emerald-400' : 'text-amber-400'}`}>
                           {diff > 0 ? '+' : '−'}
                           {kg(Math.abs(diff))}
                         </span>
@@ -238,7 +238,7 @@ export const ClientProgress: React.FC<{ client: Client }> = ({ client: initialCl
                 </div>
                 <button
                   onClick={async () => { if (await askConfirm('¿Eliminar este registro?', { okLabel: 'Eliminar' })) deleteProgress(e.id); }}
-                  className="p-1.5 rounded-lg bg-zinc-800 text-zinc-500 hover:text-red-300 cursor-pointer shrink-0"
+                  className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-500 hover:text-red-300 cursor-pointer shrink-0"
                   title="Eliminar"
                 >
                   <Trash2 className="w-3.5 h-3.5" />

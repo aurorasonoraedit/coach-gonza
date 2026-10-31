@@ -58,7 +58,7 @@ export const PackageModal: React.FC<PackageModalProps> = ({ packageToEdit, onClo
           </h2>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
+            className="w-11 h-11 inline-flex items-center justify-center rounded-lg bg-zinc-800 text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -75,7 +75,7 @@ export const PackageModal: React.FC<PackageModalProps> = ({ packageToEdit, onClo
               placeholder="Ej. Paquete Campeón (8 Sesiones)"
               value={name}
               onChange={e => setName(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-ring-red"
             />
           </div>
 
@@ -88,7 +88,7 @@ export const PackageModal: React.FC<PackageModalProps> = ({ packageToEdit, onClo
                 min="0"
                 value={price}
                 onChange={e => setPrice(Number(e.target.value))}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
 
@@ -100,7 +100,7 @@ export const PackageModal: React.FC<PackageModalProps> = ({ packageToEdit, onClo
                 min="1"
                 value={sessionCount}
                 onChange={e => setSessionCount(Number(e.target.value))}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
           </div>
@@ -111,7 +111,7 @@ export const PackageModal: React.FC<PackageModalProps> = ({ packageToEdit, onClo
               <select
                 value={category}
                 onChange={e => setCategory(e.target.value as any)}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               >
                 <option value="individual">Clase Individual</option>
                 <option value="paquete">Paquete de Sesiones</option>
@@ -127,7 +127,7 @@ export const PackageModal: React.FC<PackageModalProps> = ({ packageToEdit, onClo
                 min="1"
                 value={validityDays}
                 onChange={e => setValidityDays(Number(e.target.value))}
-                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+                className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
               />
             </div>
           </div>
@@ -139,13 +139,13 @@ export const PackageModal: React.FC<PackageModalProps> = ({ packageToEdit, onClo
               placeholder="Ej. Incluye manopleo pro, rutina de cardio y plan de hidratación..."
               value={description}
               onChange={e => setDescription(e.target.value)}
-              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-red-500"
+              className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-ring-red"
             ></textarea>
           </div>
 
           <button
             type="submit"
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-red-500/40"
+            className="w-full py-2.5 min-h-11 rounded-xl bg-zinc-900 hover:from-red-500 hover:to-red-600 text-white font-bold text-sm shadow-lg transition-all cursor-pointer border border-ring-red/40"
           >
             {packageToEdit ? 'Guardar Cambios' : 'Crear Paquete'}
           </button>
